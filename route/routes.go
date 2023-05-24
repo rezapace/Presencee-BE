@@ -36,19 +36,26 @@ func NewRoute(e *echo.Echo, db *gorm.DB) {
 	user.DELETE("/:id", controller.DeleteUserController)
 
 	// book collection
-	book := e.Group("/books")
-	book.GET("", controller.GetBookController)
-	book.GET("/:id", controller.GetBookController)
-	book.POST("", controller.CreateBookController)
-	book.PUT("/:id", controller.UpdateBookController)
-	book.DELETE("/:id", controller.DeleteBookController)
-
+	mahasiswa := e.Group("/mahasiswa")
+	mahasiswa.GET("", controller.GetMahasiswasController)
+	mahasiswa.GET("/:id", controller.GetMahasiswaController)
+	mahasiswa.POST("", controller.CreateMahasiswaController)
+	mahasiswa.PUT("/:id", controller.UpdateMahasiswaController)
+	mahasiswa.DELETE("/:id", controller.DeleteMahasiswaController)
+	
 	// book collection
-	blog := e.Group("/blogs")
-	blog.GET("", controller.GetBlogController)
-	blog.GET("/:id", controller.GetBlogController)
-	blog.POST("", controller.CreateBlogController)
-	blog.PUT("/:id", controller.UpdateBlogController)
-	blog.DELETE("/:id", controller.DeleteBlogController)
+	// book := e.Group("/books")
+	// book.GET("", controller.GetBookController)
+	// book.GET("/:id", controller.GetBookController)
+	// book.POST("", controller.CreateBookController)
+	// book.PUT("/:id", controller.UpdateBookController)
+	// book.DELETE("/:id", controller.DeleteBookController)
 
+	// // book collection
+	// blog := e.Group("/blogs")
+	// blog.GET("", controller.GetBlogController)
+	// blog.GET("/:id", controller.GetBlogController)
+	// blog.POST("", controller.CreateBlogController)
+	// blog.PUT("/:id", controller.UpdateBlogController)
+	// blog.DELETE("/:id", controller.DeleteBlogController)
 }
