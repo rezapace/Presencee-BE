@@ -3,13 +3,14 @@ package controller
 import (
 	"net/http"
 	"presensee_project/model"
+	"presensee_project/model/payload" // Ubah import path ini
 	"presensee_project/usecase"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-// GetDosensController mengembalikan semua data dosen
+// GetDosensController returns all dosen data
 func GetDosensController(c echo.Context) error {
 	dosens, err := usecase.GetListDosens()
 	if err != nil {
@@ -21,7 +22,7 @@ func GetDosensController(c echo.Context) error {
 	})
 }
 
-// GetDosenController mengembalikan data dosen berdasarkan ID
+// GetDosenController returns dosen data based on ID
 func GetDosenController(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -37,65 +38,103 @@ func GetDosenController(c echo.Context) error {
 	})
 }
 
-// CreateDosenController membuat data dosen baru
+// CreateDosenController creates a new dosen
 func CreateDosenController(c echo.Context) error {
-	payload := new(model.Dosen)
-	if err := c.Bind(payload); err != nil {
+	requestPayload := new(payload.CreateDosenRequest)
+
+	// Bind and validate the payload
+	if err := c.Bind(requestPayload); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	err := usecase.CreateDosen(payload)
+	if err := c.Validate(requestPayload); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	// Check if the user_id exists in the users table
+	_, err := usecase.GetUser(requestPayload.UserID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid user_id")
+	}
+
+	dosen := &model.Dosen{
+		Nama:   requestPayload.Nama,
+		Email:  requestPayload.Email,
+		NIP:    requestPayload.NIP,
+		Image:  requestPayload.Image,
+		UserID: requestPayload.UserID,
+	}
+
+	err = usecase.CreateDosen(dosen)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+
+	responsePayload := &payload.CreateDosenResponse{
+		DosenID: dosen.ID,
+	}
+
 	return c.JSON(http.StatusCreated, map[string]interface{}{
 		"status": "success",
-		"dosen":  payload,
+		"dosen":  responsePayload,
 	})
 }
 
-// UpdateDosenController mengubah data dosen berdasarkan ID
+// UpdateDosenController updates dosen data based on ID
 func UpdateDosenController(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
 
-	dosen, err := usecase.GetDosen(uint(id))
+	dosenToUpdate, err := usecase.GetDosen(uint(id))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	updatedDosen := new(model.Dosen) // Buat variabel pointer untuk menampung data yang di-bind
+	updatedDosen := new(payload.UpdateDosenRequest)
+
+	// Bind and validate the payload
 	if err := c.Bind(updatedDosen); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	if err := c.Validate(updatedDosen); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 
-	// Perbarui data dosen yang telah di-bind
-	dosen.Nama = updatedDosen.Nama
-	dosen.Email = updatedDosen.Email
-	// Tambahkan perubahan lain sesuai struktur model Dosen
+	// Update dosen data
+	dosenToUpdate.Nama = updatedDosen.Nama
+	dosenToUpdate.Email = updatedDosen.Email
+	dosenToUpdate.NIP = updatedDosen.NIP
+	dosenToUpdate.Image = updatedDosen.Image
+	dosenToUpdate.UserID = updatedDosen.UserID
 
-	err = usecase.UpdateDosen(&dosen) // Ubah menjadi &dosen untuk menggunakan pointer
+	err = usecase.UpdateDosen(&dosenToUpdate) // Pass the pointer to dosenToUpdate
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	response := &payload.UpdateDosenResponse{
+		DosenID: dosenToUpdate.ID,
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "success",
-		"dosen":  dosen,
+		"dosen":  response,
 	})
 }
 
-// DeleteDosenController menghapus data dosen berdasarkan ID
+// DeleteDosenController deletes dosen data based on ID
 func DeleteDosenController(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
+
 	err = usecase.DeleteDosen(uint(id))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status":  "success",
 		"message": "Dosen deleted successfully",

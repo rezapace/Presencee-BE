@@ -10,8 +10,8 @@ type User struct {
 	Email     string    `json:"email" form:"email"`
 	Password  string    `json:"password" form:"password"`
 	Token     string    `gorm:"-"`
-	Dosen     Dosen     `gorm:"foreignKey:UserID"`
-	Mahasiswa Mahasiswa `gorm:"foreignKey:UserID"`
+	Dosen     Dosen     `gorm:"foreignKey:user_id"`
+	Mahasiswa Mahasiswa `gorm:"foreignKey:user_id"`
 }
 
 type Mahasiswa struct {
