@@ -54,7 +54,6 @@ func CreateDosenController(c echo.Context) error {
 }
 
 // UpdateDosenController mengubah data dosen berdasarkan ID
-// UpdateDosenController mengubah data dosen berdasarkan ID
 func UpdateDosenController(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {

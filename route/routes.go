@@ -40,7 +40,7 @@ func NewRoute(e *echo.Echo, db *gorm.DB) {
 	dosen.GET("", controller.GetDosenController)
 	dosen.GET("/:id", controller.GetDosenController)
 	dosen.POST("", controller.CreateDosenController)
-	// dosen.PUT("/:id", controller.UpdateDosenController)
+	dosen.PUT("/:id", controller.UpdateDosenController)
 	dosen.DELETE("/:id", controller.DeleteDosenController)
 
 	// book collection
