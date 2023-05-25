@@ -35,6 +35,15 @@ func NewRoute(e *echo.Echo, db *gorm.DB) {
 	user.PUT("/:id", controller.UpdateUserController)
 	user.DELETE("/:id", controller.DeleteUserController)
 
+	// book collection
+	mahasiswa := e.Group("/mahasiswa")
+	mahasiswa.GET("", controller.GetMahasiswasController)
+	mahasiswa.GET("/:id", controller.GetMahasiswaController)
+	mahasiswa.POST("", controller.CreateMahasiswaController)
+	mahasiswa.PUT("/:id", controller.UpdateMahasiswaController)
+	mahasiswa.DELETE("/:id", controller.DeleteMahasiswaController)
+	
+
 	// dosen
 	dosen := e.Group("/dosen")
 	dosen.GET("", controller.GetDosenController)
