@@ -1,7 +1,7 @@
 package payload
 
 type CreateMahasiswaRequest struct {
-	Name   string `json:"name" form:"name" validate:"required"`
+	Nama   string `json:"nama" form:"nama" validate:"required"`
 	Email  string `json:"email" form:"email" validate:"required,email"`
 	NIM    string `json:"nim" form:"nim" validate:"required"`
 	Image  string `json:"image" form:"image"`
@@ -13,7 +13,7 @@ type CreateMahasiswaResponse struct {
 }
 
 type UpdateMahasiswaRequest struct {
-	Name   string `json:"name" form:"name" validate:"required"`
+	Nama   string `json:"nama" form:"nama" validate:"required"`
 	Email  string `json:"email" form:"email" validate:"required,email"`
 	NIM    string `json:"nim" form:"nim" validate:"required"`
 	Image  string `json:"image" form:"image"`
@@ -26,7 +26,7 @@ type UpdateMahasiswaResponse struct {
 
 type GetMahasiswaResponse struct {
 	MahasiswaID uint   `json:"mahasiswa_id"`
-	Name        string `json:"name"`
+	Nama        string `json:"nama"`
 	Email       string `json:"email"`
 	NIM         string `json:"nim"`
 	Image       string `json:"image"`

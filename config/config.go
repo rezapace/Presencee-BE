@@ -16,7 +16,7 @@ func InitDB() *gorm.DB {
 		"DB_Password": "Kuripan69",
 		"DB_Port":     "3306",
 		"DB_Host":     "localhost",
-		"DB_Name":     "project",
+		"DB_Name":     "projects",
 	}
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",

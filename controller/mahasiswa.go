@@ -38,7 +38,7 @@ func GetMahasiswaController(c echo.Context) error {
 	})
 }
 
-// CreateMahasiswaController creates a new Mahasiswa
+// CreateMahasiswaController creates a new mahasiswa
 func CreateMahasiswaController(c echo.Context) error {
 	requestPayload := new(payload.CreateMahasiswaRequest)
 
@@ -50,14 +50,14 @@ func CreateMahasiswaController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	// Check if the user_id exists in the mahasiswas table
-	_, err := usecase.GetMahasiswa(requestPayload.UserID)
+	// Check if the user_id exists in the users table
+	_, err := usecase.GetUser(requestPayload.UserID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid user_id")
 	}
 
 	mahasiswa := &model.Mahasiswa{
-		Name:   requestPayload.Name,
+		Nama:   requestPayload.Nama,
 		Email:  requestPayload.Email,
 		NIM:    requestPayload.NIM,
 		Image:  requestPayload.Image,
@@ -102,13 +102,13 @@ func UpdateMahasiswaController(c echo.Context) error {
 	}
 
 	// Update mahasiswa data
-	mahasiswaToUpdate.Name = updatedMahasiswa.Name
+	mahasiswaToUpdate.Nama = updatedMahasiswa.Nama
 	mahasiswaToUpdate.Email = updatedMahasiswa.Email
 	mahasiswaToUpdate.NIM = updatedMahasiswa.NIM
 	mahasiswaToUpdate.Image = updatedMahasiswa.Image
 	mahasiswaToUpdate.UserID = updatedMahasiswa.UserID
 
-	err = usecase.UpdateMahasiswa(&mahasiswaToUpdate) // Pass the pointer to dosenToUpdate
+	err = usecase.UpdateMahasiswa(&mahasiswaToUpdate) // Pass the pointer to mahasiswaToUpdate
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
