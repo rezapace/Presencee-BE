@@ -43,6 +43,15 @@ func NewRoute(e *echo.Echo, db *gorm.DB) {
 	mahasiswa.PUT("/:id", controller.UpdateMahasiswaController)
 	mahasiswa.DELETE("/:id", controller.DeleteMahasiswaController)
 	
+
+	// dosen
+	dosen := e.Group("/dosen")
+	dosen.GET("", controller.GetDosenController)
+	dosen.GET("/:id", controller.GetDosenController)
+	dosen.POST("", controller.CreateDosenController)
+	dosen.PUT("/:id", controller.UpdateDosenController)
+	dosen.DELETE("/:id", controller.DeleteDosenController)
+
 	// book collection
 	// book := e.Group("/books")
 	// book.GET("", controller.GetBookController)
@@ -58,4 +67,5 @@ func NewRoute(e *echo.Echo, db *gorm.DB) {
 	// blog.POST("", controller.CreateBlogController)
 	// blog.PUT("/:id", controller.UpdateBlogController)
 	// blog.DELETE("/:id", controller.DeleteBlogController)
+
 }

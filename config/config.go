@@ -13,10 +13,10 @@ var DB *gorm.DB
 func InitDB() *gorm.DB {
 	config := map[string]string{
 		"DB_Username": "root",
-		"DB_Password": "Kuripan69",
+		"DB_Password": "",
 		"DB_Port":     "3306",
 		"DB_Host":     "localhost",
-		"DB_Name":     "projects",
+		"DB_Name":     "caps",
 	}
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
