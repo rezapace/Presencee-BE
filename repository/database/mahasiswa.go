@@ -12,6 +12,7 @@ func CreateMahasiswa(mahasiswa *model.Mahasiswa) error {
 	return nil
 }
 
+
 func GetMahasiswas() (mahasiswas []model.Mahasiswa, err error) {
 	if err = config.DB.Model(&model.Mahasiswa{}).Find(&mahasiswas).Error; err != nil {
 		return

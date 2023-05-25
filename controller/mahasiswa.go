@@ -57,10 +57,14 @@ func CreateMahasiswaController(c echo.Context) error {
 	}
 
 	mahasiswa := &model.Mahasiswa{
-		Nama:   requestPayload.Nama,
+		Name:   requestPayload.Name,
 		Email:  requestPayload.Email,
 		NIM:    requestPayload.NIM,
 		Image:  requestPayload.Image,
+		Phone:  requestPayload.Phone,
+		Jurusan:  requestPayload.Jurusan,
+		TahunMasuk:  requestPayload.TahunMasuk,
+		IPK:  requestPayload.IPK,
 		UserID: requestPayload.UserID,
 	}
 
@@ -102,10 +106,14 @@ func UpdateMahasiswaController(c echo.Context) error {
 	}
 
 	// Update mahasiswa data
-	mahasiswaToUpdate.Nama = updatedMahasiswa.Nama
+	mahasiswaToUpdate.Name = updatedMahasiswa.Name
 	mahasiswaToUpdate.Email = updatedMahasiswa.Email
 	mahasiswaToUpdate.NIM = updatedMahasiswa.NIM
 	mahasiswaToUpdate.Image = updatedMahasiswa.Image
+	mahasiswaToUpdate.Phone = updatedMahasiswa.Phone
+	mahasiswaToUpdate.Jurusan = updatedMahasiswa.Jurusan
+	mahasiswaToUpdate.TahunMasuk = updatedMahasiswa.TahunMasuk
+	mahasiswaToUpdate.IPK = updatedMahasiswa.IPK	
 	mahasiswaToUpdate.UserID = updatedMahasiswa.UserID
 
 	err = usecase.UpdateMahasiswa(&mahasiswaToUpdate) // Pass the pointer to mahasiswaToUpdate
