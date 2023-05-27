@@ -34,7 +34,7 @@ type UpdateMahasiswaResponse struct {
 
 type GetMahasiswaResponse struct {
 	MahasiswaID uint   `json:"mahasiswa_id"`
-	Nama        string `json:"nama"`
+	Name        string `json:"name"`
 	Email       string `json:"email"`
 	NIM         string `json:"nim"`
 	Image       string `json:"image"`

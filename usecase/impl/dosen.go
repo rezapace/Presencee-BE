@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"presensee_project/model"
-	"presensee_project/repository/database"
+	database "presensee_project/repository/impl"
 )
 
 func CreateDosen(dosen *model.Dosen) error {

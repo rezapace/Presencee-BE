@@ -1,25 +1,84 @@
 package payload
 
-type (
-	CreateUserRequest struct {
-		Email    string `json:"email" form:"email" validate:"required,email"`
-		Password string `json:"password" form:"password" validate:"required,min=5"`
-		Role     string `json:"role" form:"role" validate:"required"`
-	}
+import "presensee_project/model"
 
-	CreateUserResponse struct {
-		UserID uint   `json:"user_id"`
-		Role   string `json:"role"`
-		Token  string `json:"token"`
-	}
+type UserSignUpRequest struct {
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Name     string `json:"name" validate:"required"`
+	Telp     string `json:"telp" validate:"required"`
+	Role     string `json:"role" validate:"required"`
+}
 
-	LoginUserRequest struct {
-		Email    string `json:"email" form:"email" validate:"required,email"`
-		Password string `json:"password" form:"password" validate:"required,min=5"`
+func (u *UserSignUpRequest) ToEntity() *model.User {
+	return &model.User{
+		Email:    u.Email,
+		Password: u.Password,
+		Name:     u.Name,
+		Role:     u.Role,
 	}
+}
 
-	LoginUserResponse struct {
-		UserID uint   `json:"user_id"`
-		Token  string `json:"token"`
+type UserLoginRequest struct {
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
+type UserUpdateRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
+	Telp     string `json:"telp"`
+	Role     string `json:"role"`
+}
+
+func (u *UserUpdateRequest) ToEntity() *model.User {
+	return &model.User{
+		Email:    u.Email,
+		Password: u.Password,
+		Name:     u.Name,
+		Role:     u.Role,
 	}
-)
+}
+
+type GetSingleUserResponse struct {
+	ID    uint   `json:"id"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
+	Role  string `json:"role"`
+}
+
+func NewGetSingleUserResponse(user *model.User) *GetSingleUserResponse {
+	return &GetSingleUserResponse{
+		ID:    user.ID,
+		Email: user.Email,
+		Name:  user.Name,
+		Role:  user.Role,
+	}
+}
+
+type BriefUserResponse struct {
+	ID    uint   `json:"id"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
+	Role  string `json:"role"`
+}
+
+func NewBriefUserResponse(user *model.User) *BriefUserResponse {
+	return &BriefUserResponse{
+		ID:    user.ID,
+		Email: user.Email,
+		Name:  user.Name,
+		Role:  user.Role,
+	}
+}
+
+type BriefUsersResponse []BriefUserResponse
+
+func NewBriefUsersResponse(users *model.Users) *BriefUsersResponse {
+	var briefUsersResponse BriefUsersResponse
+	for _, user := range *users {
+		briefUsersResponse = append(briefUsersResponse, *NewBriefUserResponse(&user))
+	}
+	return &briefUsersResponse
+}

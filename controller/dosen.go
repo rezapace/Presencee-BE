@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"presensee_project/model"
 	"presensee_project/model/payload" // Ubah import path ini
-	"presensee_project/usecase"
+	usecase "presensee_project/usecase/impl"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -51,20 +51,21 @@ func CreateDosenController(c echo.Context) error {
 	}
 
 	// Check if the user_id exists in the users table
-	_, err := usecase.GetUser(requestPayload.UserID)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid user_id")
-	}
+	// _, err := usecase.GetSingleUser(requestPayload.UserID)
+	// if err != nil {
+	// 	return echo.NewHTTPError(http.StatusBadRequest, "Invalid user_id")
+	// }
 
 	dosen := &model.Dosen{
-		Nama:   requestPayload.Nama,
+		Name:   requestPayload.Name,
 		Email:  requestPayload.Email,
 		NIP:    requestPayload.NIP,
+		Phone:  requestPayload.Phone,
 		Image:  requestPayload.Image,
 		UserID: requestPayload.UserID,
 	}
 
-	err = usecase.CreateDosen(dosen)
+	err := usecase.CreateDosen(dosen)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -102,9 +103,10 @@ func UpdateDosenController(c echo.Context) error {
 	}
 
 	// Update dosen data
-	dosenToUpdate.Nama = updatedDosen.Nama
+	dosenToUpdate.Name = updatedDosen.Name
 	dosenToUpdate.Email = updatedDosen.Email
 	dosenToUpdate.NIP = updatedDosen.NIP
+	dosenToUpdate.Phone = updatedDosen.Phone
 	dosenToUpdate.Image = updatedDosen.Image
 	dosenToUpdate.UserID = updatedDosen.UserID
 
