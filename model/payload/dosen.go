@@ -1,9 +1,10 @@
 package payload
 
 type CreateDosenRequest struct {
-	Nama   string `json:"nama" form:"nama" validate:"required"`
+	Name   string `json:"name" form:"name" validate:"required"`
 	Email  string `json:"email" form:"email" validate:"required,email"`
 	NIP    string `json:"nip" form:"nip" validate:"required"`
+	Phone  string `json:"phone" form:"phone"`
 	Image  string `json:"image" form:"image"`
 	UserID uint   `json:"user_id" form:"user_id" validate:"required"`
 }
@@ -13,9 +14,10 @@ type CreateDosenResponse struct {
 }
 
 type UpdateDosenRequest struct {
-	Nama   string `json:"nama" form:"nama" validate:"required"`
+	Name   string `json:"name" form:"name" validate:"required"`
 	Email  string `json:"email" form:"email" validate:"required,email"`
 	NIP    string `json:"nip" form:"nip" validate:"required"`
+	Phone  string `json:"phone" form:"phone"`
 	Image  string `json:"image" form:"image"`
 	UserID uint   `json:"user_id" form:"user_id" validate:"required"`
 }
@@ -26,7 +28,7 @@ type UpdateDosenResponse struct {
 
 type GetDosenResponse struct {
 	DosenID uint   `json:"dosen_id"`
-	Nama    string `json:"nama"`
+	Name    string `json:"name"`
 	Email   string `json:"email"`
 	NIP     string `json:"nip"`
 	Image   string `json:"image"`
