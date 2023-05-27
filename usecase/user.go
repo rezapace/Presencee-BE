@@ -6,30 +6,37 @@ import (
 	"presensee_project/model"
 	"presensee_project/model/payload"
 	"presensee_project/repository/database"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
-func LoginUser(user *model.User) (err error) {
+func LoginUser(requestUser *model.User) (model.User, error) {
 	// check to db email and password
-	err = database.LoginUser(user)
+	user, err := database.LoginUser(requestUser)
 	if err != nil {
 		fmt.Println("GetUser: Error getting user from database")
-		return
+		return user, err
 	}
 	// generate jwt
 	token, err := middleware.CreateToken(int(user.ID))
 	if err != nil {
 		fmt.Println("GetUser: Error Generate token")
-		return
+		return user, err
 	}
 	user.Token = token
-	return
+	return user, nil
 }
 
 func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse, err error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return
+	}
+
 	newUser := &model.User{
-		Name:     req.Name,
 		Email:    req.Email,
-		Password: req.Password,
+		Password: string(hash),
+		Role:     req.Role,
 	}
 	err = database.CreateUser(newUser)
 	if err != nil {
@@ -42,13 +49,9 @@ func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse
 		return
 	}
 	newUser.Token = token
-	err = database.UpdateUser(newUser)
-	if err != nil {
-		fmt.Println("UpdateUser: Error Update user")
-		return
-	}
 	resp = payload.CreateUserResponse{
 		UserID: newUser.ID,
+		Role:   newUser.Role,
 		Token:  newUser.Token,
 	}
 	return

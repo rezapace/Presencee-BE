@@ -7,19 +7,30 @@ import (
 	"presensee_project/usecase"
 
 	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func LoginUserController(c echo.Context) error {
-	user := model.User{}
-	c.Bind(&user)
+	userRequest := model.User{}
+	c.Bind(&userRequest)
 
-	err := usecase.LoginUser(&user)
+	user, err := usecase.LoginUser(&userRequest)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		if err == gorm.ErrRecordNotFound {
+			return echo.NewHTTPError(http.StatusUnauthorized)
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userRequest.Password))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized)
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "success login",
-		"user":   user,
+		"user":   userRequest,
 	})
 }

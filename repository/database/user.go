@@ -6,7 +6,9 @@ import (
 )
 
 func CreateUser(user *model.User) error {
-	if err := config.DB.Create(user).Error; err != nil {
+	err := config.DB.Create(&user).Error
+
+	if err != nil {
 		return err
 	}
 	return nil
@@ -35,7 +37,9 @@ func GetUserWithBlog(id uint) (user model.User, err error) {
 }
 
 func UpdateUser(user *model.User) error {
-	if err := config.DB.Updates(user).Error; err != nil {
+	err := config.DB.Updates(&user).Error
+
+	if err != nil {
 		return err
 	}
 	return nil
@@ -48,9 +52,13 @@ func DeleteUser(user *model.User) error {
 	return nil
 }
 
-func LoginUser(user *model.User) error {
-	if err := config.DB.Where("email = ? AND password = ?", user.Email, user.Password).First(&user).Error; err != nil {
-		return err
+func LoginUser(requestUser *model.User) (model.User, error) {
+	var user model.User
+
+	err := config.DB.Where(&model.User{Email: requestUser.Email}).First(&user).Error
+	if err != nil {
+		return user, err
 	}
-	return nil
+
+	return user, nil
 }
