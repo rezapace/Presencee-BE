@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"presensee_project/model"
-	"presensee_project/repository"
+	database "presensee_project/repository/impl"
 )
 
 func CreateJadwal(jadwal *model.Jadwal) error {
-	err := repository.CreateJadwal(jadwal)
+	err := database.CreateJadwal(jadwal)
 	if err != nil {
 		return err
 	}
@@ -14,7 +14,7 @@ func CreateJadwal(jadwal *model.Jadwal) error {
 }
 
 func GetJadwal(id uint) (model.Jadwal, error) {
-	jadwal, err := repository.GetJadwalByID(id)
+	jadwal, err := database.GetJadwalByID(id)
 	if err != nil {
 		return model.Jadwal{}, err
 	}
@@ -22,7 +22,7 @@ func GetJadwal(id uint) (model.Jadwal, error) {
 }
 
 func GetListJadwals() ([]model.Jadwal, error) {
-	jadwals, err := repository.GetJadwals()
+	jadwals, err := database.GetJadwals()
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func GetListJadwals() ([]model.Jadwal, error) {
 }
 
 func UpdateJadwal(jadwal *model.Jadwal) error {
-	err := repository.UpdateJadwal(jadwal)
+	err := database.UpdateJadwal(jadwal)
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func UpdateJadwal(jadwal *model.Jadwal) error {
 }
 
 func DeleteJadwal(id uint) error {
-	err := repository.DeleteJadwal(id)
+	err := database.DeleteJadwal(id)
 	if err != nil {
 		return err
 	}
