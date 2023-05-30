@@ -60,4 +60,12 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	dosen.PUT("/:id/", controller.UpdateDosenController)
 	dosen.DELETE("/:id/", controller.DeleteDosenController)
 
+	// jadwal
+	jadwal := v1.Group("/jadwal")
+	jadwal.GET("/", controller.GetJadwalsController)
+	jadwal.GET("/:id/", controller.GetJadwalController)
+	jadwal.POST("/", controller.CreateJadwalController)
+	jadwal.PUT("/:id/", controller.UpdateJadwalController)
+	jadwal.DELETE("/:id/", controller.DeleteJadwalController)
+
 }
