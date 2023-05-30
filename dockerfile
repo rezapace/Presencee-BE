@@ -1,9 +1,12 @@
-FROM golang:1.20-alpine
+FROM golang:1.20.2-alpine3.17 as builder
+
 WORKDIR /app
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-COPY . ./
-RUN go build -o /docker-alta
-EXPOSE  8080
-CMD ["/docker-alta"]
+COPY . .
+
+RUN CGO_ENABLED=1 GOOS=linux go build -tags netgo -o main.app .
+
+FROM alpine:latest
+
+COPY --from=builder /app/main.app .
+
+CMD ["./main.app"]
