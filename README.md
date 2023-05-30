@@ -1,4 +1,5 @@
 # Presencee-BE
 
-[ ] dosen
-[ ] jadwal
+- [x] [dosen]
+
+- [x] [jadwal]
