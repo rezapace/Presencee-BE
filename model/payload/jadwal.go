@@ -1,11 +1,12 @@
 package payload
 
 type CreateJadwalRequest struct {
-	Hari      string `json:"hari" validate:"required"`
-	Matkul    string `json:"matkul" validate:"required"`
-	Ruangan   string `json:"ruangan" validate:"required"`
-	Jam       string `json:"jam" validate:"required"`
-	NamaDosen string `json:"nama_dosen" validate:"required"`
+	Hari    string `json:"hari" validate:"required"`
+	Matkul  string `json:"matkul" validate:"required"`
+	Ruangan string `json:"ruangan" validate:"required"`
+	Jam     string `json:"jam" validate:"required"`
+	Name    string `json:"name" validate:"required"`
+	UserID  uint   `json:"user_id" form:"user_id" validate:"required"`
 }
 
 type CreateJadwalResponse struct {
@@ -13,12 +14,12 @@ type CreateJadwalResponse struct {
 }
 
 type UpdateJadwalRequest struct {
-	ID        uint   `json:"id" validate:"required"`
-	Hari      string `json:"hari" validate:"required"`
-	Matkul    string `json:"matkul" validate:"required"`
-	Ruangan   string `json:"ruangan" validate:"required"`
-	Jam       string `json:"jam" validate:"required"`
-	NamaDosen string `json:"nama_dosen" validate:"required"`
+	Hari    string `json:"hari" validate:"required"`
+	Matkul  string `json:"matkul" validate:"required"`
+	Ruangan string `json:"ruangan" validate:"required"`
+	Jam     string `json:"jam" validate:"required"`
+	Name    string `json:"name" validate:"required"`
+	UserID  uint   `json:"user_id" form:"user_id" validate:"required"`
 }
 
 type UpdateJadwalResponse struct {

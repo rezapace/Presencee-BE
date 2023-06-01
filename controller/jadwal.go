@@ -51,11 +51,12 @@ func CreateJadwalController(c echo.Context) error {
 	}
 
 	jadwal := &model.Jadwal{
-		Hari:      requestPayload.Hari,
-		Matkul:    requestPayload.Matkul,
-		Ruangan:   requestPayload.Ruangan,
-		Jam:       requestPayload.Jam,
-		NamaDosen: requestPayload.NamaDosen,
+		Hari:    requestPayload.Hari,
+		Matkul:  requestPayload.Matkul,
+		Ruangan: requestPayload.Ruangan,
+		Jam:     requestPayload.Jam,
+		Name:    requestPayload.Name,
+		UserID:  requestPayload.UserID,
 	}
 
 	err := usecase.CreateJadwal(jadwal)
@@ -100,7 +101,8 @@ func UpdateJadwalController(c echo.Context) error {
 	jadwalToUpdate.Matkul = updatedJadwal.Matkul
 	jadwalToUpdate.Ruangan = updatedJadwal.Ruangan
 	jadwalToUpdate.Jam = updatedJadwal.Jam
-	jadwalToUpdate.NamaDosen = updatedJadwal.NamaDosen
+	jadwalToUpdate.Name = updatedJadwal.Name
+	jadwalToUpdate.UserID = updatedJadwal.UserID
 
 	err = usecase.UpdateJadwal(&jadwalToUpdate) // Pass the pointer to jadwalToUpdate
 	if err != nil {
