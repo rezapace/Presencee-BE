@@ -42,10 +42,12 @@ func (u *UserUpdateRequest) ToEntity() *model.User {
 }
 
 type GetSingleUserResponse struct {
-	ID    uint   `json:"id"`
-	Email string `json:"email"`
-	Name  string `json:"name"`
-	Role  string `json:"role"`
+	ID        uint            `json:"id"`
+	Email     string          `json:"email"`
+	Name      string          `json:"name"`
+	Role      string          `json:"role"`
+	Mahasiswa model.Mahasiswa `json:"mahasiswa"`
+	Dosen     model.Dosen     `json:"dosen"`
 }
 
 func NewGetSingleUserResponse(user *model.User) *GetSingleUserResponse {
