@@ -95,9 +95,9 @@ func (u *AbsenController) GetSingleAbsen(c echo.Context) error {
 	switch {
 	case role == "pegawai":
 		fallthrough
-	case role == "admin":
+	case role == "admin" || role == "Mahasiswa" || role == "Dosen":
 		return c.JSON(http.StatusOK, echo.Map{
-			"message": "success getting absen",
+			"message": "success getting user",
 			"data":    absen,
 		})
 	default:

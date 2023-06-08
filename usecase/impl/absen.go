@@ -46,8 +46,14 @@ func (d *AbsenServiceImpl) GetSingleAbsen(ctx context.Context, absenID uint) (*p
 	if err != nil {
 		return nil, err
 	}
+
+	jadwal, err := database.GetJadwalByID(absen.JadwalID)
+	if err != nil {
+		return nil, err
+	}
 	var absenResponse = payload.NewGetSingleAbsenResponse(absen)
 	absenResponse.Mahasiswa = mahasiswa
+	absenResponse.Jadwal = jadwal
 
 	return absenResponse, nil
 }

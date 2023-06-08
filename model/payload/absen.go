@@ -66,6 +66,7 @@ type GetSingleAbsenResponse struct {
 	Location    string          `json:"location"`
 	Image       string          `json:"image"`
 	Mahasiswa   model.Mahasiswa `json:"mahasiswa"`
+	Jadwal      model.Jadwal    `json:"jadwal"`
 }
 
 func NewGetSingleAbsenResponse(absen *model.Absen) *GetSingleAbsenResponse {

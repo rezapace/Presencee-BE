@@ -53,7 +53,7 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	usersWithAuth.DELETE("/:user_id/", r.userController.DeleteUser, jwtMiddleware)
 
 	// mahasiswa collection
-	mahasiswa := v1.Group("/mahasiswa")
+	mahasiswa := v1.Group("/mahasiswa", jwtMiddleware)
 	mahasiswa.GET("/", controller.GetMahasiswasController)
 	mahasiswa.GET("/:id/", controller.GetMahasiswaController)
 	mahasiswa.GET("/:user_id/", controller.GetMahasiswaController)
@@ -62,7 +62,7 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	mahasiswa.DELETE("/:id/", controller.DeleteMahasiswaController)
 
 	// dosen
-	dosen := v1.Group("/dosen")
+	dosen := v1.Group("/dosen", jwtMiddleware)
 	dosen.GET("/", controller.GetDosensController)
 	dosen.GET("/:id/", controller.GetDosenController)
 	dosen.GET("/:user_id/", controller.GetDosenController)
@@ -71,7 +71,7 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	dosen.DELETE("/:id/", controller.DeleteDosenController)
 
 	// room
-	room := v1.Group("/room")
+	room := v1.Group("/room", jwtMiddleware)
 	room.GET("/", controller.GetRoomsController)
 	room.GET("/:id/", controller.GetRoomController)
 	room.POST("/", controller.CreateRoomController)
@@ -79,7 +79,7 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	room.DELETE("/:id/", controller.DeleteRoomController)
 
 	// matakuliah
-	matakuliah := v1.Group("/matakuliah")
+	matakuliah := v1.Group("/matakuliah", jwtMiddleware)
 	matakuliah.GET("/", controller.GetMatakuliahsController)
 	matakuliah.GET("/:id/", controller.GetMatakuliahController)
 	matakuliah.GET("/:name/", controller.GetMatakuliahByNameAndDateController)
@@ -88,7 +88,7 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	matakuliah.DELETE("/:id/", controller.DeleteMatakuliahController)
 
 	// absen
-	absens := v1.Group("/absens")
+	absens := v1.Group("/absens", jwtMiddleware)
 	absens.POST("/", r.absenController.CreateAbsen)
 	absens.PUT("/", r.absenController.UpdateAbsen, jwtMiddleware)
 	absens.GET("/:absen_id/", r.absenController.GetSingleAbsen, jwtMiddleware)
@@ -96,18 +96,18 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	absens.DELETE("/:absen_id/", r.absenController.DeleteAbsen, jwtMiddleware)
 
 	// Jurusan
-	jurusan := v1.Group("/jurusan")
+	jurusan := v1.Group("/jurusan", jwtMiddleware)
 	jurusan.GET("/", controller.GetJurusansController)
 	jurusan.GET("/:id/", controller.GetJurusanController)
 	jurusan.POST("/", controller.CreateJurusanController)
 	jurusan.PUT("/:id/", controller.UpdateJurusanController)
 	jurusan.DELETE("/:id/", controller.DeleteJurusanController)
-  
+
 	// jadwal
-	jadwal := v1.Group("/jadwal")
+	jadwal := v1.Group("/jadwal", jwtMiddleware)
 	jadwal.GET("/", controller.GetJadwalsController)
 	jadwal.GET("/:id/", controller.GetJadwalController)
 	jadwal.POST("/", controller.CreateJadwalController)
 	jadwal.PUT("/:id/", controller.UpdateJadwalController)
-	jadwal.DELETE("/:id/", controller.DeleteJadwalController
+	jadwal.DELETE("/:id/", controller.DeleteJadwalController)
 }
