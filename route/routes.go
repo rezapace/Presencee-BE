@@ -24,6 +24,7 @@ func NewRoutes(userController *userControllerPkg.UserController) *Routes {
 func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	e.Pre(middleware.AddTrailingSlash())
 	e.Use(middleware.Recover())
+  
 	e.Use(middleware.CORS())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
@@ -64,5 +65,13 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	dosen.POST("/", controller.CreateDosenController)
 	dosen.PUT("/:id/", controller.UpdateDosenController)
 	dosen.DELETE("/:id/", controller.DeleteDosenController)
+
+	// jadwal
+	jadwal := v1.Group("/jadwal")
+	jadwal.GET("/", controller.GetJadwalsController)
+	jadwal.GET("/:id/", controller.GetJadwalController)
+	jadwal.POST("/", controller.CreateJadwalController)
+	jadwal.PUT("/:id/", controller.UpdateJadwalController)
+	jadwal.DELETE("/:id/", controller.DeleteJadwalController)
 
 }
