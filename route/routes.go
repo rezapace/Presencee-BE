@@ -24,6 +24,12 @@ func NewRoutes(userController *userControllerPkg.UserController) *Routes {
 func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	e.Pre(middleware.AddTrailingSlash())
 	e.Use(middleware.Recover())
+  
+	e.Use(middleware.CORS())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
 	e.Validator = &validation.CustomValidator{Validator: validator.New()}
 
