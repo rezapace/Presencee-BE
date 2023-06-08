@@ -1,54 +1,75 @@
-package route
+package routes
 
 import (
-	"net/http"
 	"presensee_project/controller"
+	"presensee_project/utils/validation"
 
-	"github.com/go-playground/validator"
+	userControllerPkg "presensee_project/controller"
+
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
+	"github.com/labstack/echo/v4/middleware"
 )
 
-type CustomValidator struct {
-	validator *validator.Validate
+type Routes struct {
+	userController *userControllerPkg.UserController
 }
 
-func (cv *CustomValidator) Validate(i interface{}) error {
-	if err := cv.validator.Struct(i); err != nil {
-		// Optionally, you could return the error to give each route more control over the status code
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+func NewRoutes(userController *userControllerPkg.UserController) *Routes {
+	return &Routes{
+		userController: userController,
 	}
-	return nil
 }
 
-func NewRoute(e *echo.Echo, db *gorm.DB) {
-	e.Validator = &CustomValidator{validator: validator.New()}
+func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
+	e.Pre(middleware.AddTrailingSlash())
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
-	e.POST("/login", controller.LoginUserController)
-	e.POST("/register", controller.CreateUserController)
+	e.Validator = &validation.CustomValidator{Validator: validator.New()}
 
-	// user collection
-	user := e.Group("/users")
-	user.GET("", controller.GetUserController)
-	user.GET("/:id", controller.GetUserController)
-	user.POST("", controller.CreateUserController)
-	user.PUT("/:id", controller.UpdateUserController)
-	user.DELETE("/:id", controller.DeleteUserController)
+	jwtMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningKey: []byte(conf["JWT_SECRET"]),
+	})
 
-	// book collection
-	book := e.Group("/books")
-	book.GET("", controller.GetBookController)
-	book.GET("/:id", controller.GetBookController)
-	book.POST("", controller.CreateBookController)
-	book.PUT("/:id", controller.UpdateBookController)
-	book.DELETE("/:id", controller.DeleteBookController)
+	v1 := e.Group("/v1")
 
-	// book collection
-	blog := e.Group("/blogs")
-	blog.GET("", controller.GetBlogController)
-	blog.GET("/:id", controller.GetBlogController)
-	blog.POST("", controller.CreateBlogController)
-	blog.PUT("/:id", controller.UpdateBlogController)
-	blog.DELETE("/:id", controller.DeleteBlogController)
+	// Users
+	users := v1.Group("/users")
+	users.POST("/signup/", r.userController.SignUpUser)
+	users.POST("/login/", r.userController.LoginUser)
 
+	usersWithAuth := users.Group("", jwtMiddleware)
+	usersWithAuth.GET("/", r.userController.GetBriefUsers)
+	usersWithAuth.PUT("/", r.userController.UpdateUser)
+	usersWithAuth.GET("/:user_id/", r.userController.GetSingleUser, jwtMiddleware)
+	usersWithAuth.DELETE("/:user_id/", r.userController.DeleteUser, jwtMiddleware)
+
+	// mahasiswa collection
+	mahasiswa := v1.Group("/mahasiswa")
+	mahasiswa.GET("/", controller.GetMahasiswasController)
+	mahasiswa.GET("/:id/", controller.GetMahasiswaController)
+	mahasiswa.POST("/", controller.CreateMahasiswaController)
+	mahasiswa.PUT("/:id/", controller.UpdateMahasiswaController)
+	mahasiswa.DELETE("/:id/", controller.DeleteMahasiswaController)
+
+	// dosen
+	dosen := v1.Group("/dosen")
+	dosen.GET("/", controller.GetDosensController)
+	dosen.GET("/:id/", controller.GetDosenController)
+	dosen.POST("/", controller.CreateDosenController)
+	dosen.PUT("/:id/", controller.UpdateDosenController)
+	dosen.DELETE("/:id/", controller.DeleteDosenController)
+
+	// Jurusan
+	jurusan := v1.Group("/jurusan")
+	jurusan.GET("/", controller.GetJurusansController)
+	jurusan.GET("/:id/", controller.GetJurusanController)
+	jurusan.POST("/", controller.CreateJurusanController)
+	jurusan.PUT("/:id/", controller.UpdateJurusanController)
+	jurusan.DELETE("/:id/", controller.DeleteJurusanController)
 }
