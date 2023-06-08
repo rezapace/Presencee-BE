@@ -44,5 +44,5 @@ func InitDB() *gorm.DB {
 }
 
 func InitMigrate() {
-	DB.AutoMigrate(&model.User{}, &model.Mahasiswa{}, &model.Dosen{}, &model.Absen{})
+	DB.AutoMigrate(&model.User{}, &model.Mahasiswa{}, &model.Dosen{}, &model.Jadwal{}, &model.Absen{})
 }

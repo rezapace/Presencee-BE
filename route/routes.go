@@ -26,6 +26,7 @@ func NewRoutes(userController *ControllerPkg.UserController, absenController *Co
 func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	e.Pre(middleware.AddTrailingSlash())
 	e.Use(middleware.Recover())
+
 	e.Use(middleware.CORS())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
@@ -76,4 +77,13 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	absens.GET("/:absen_id/", r.absenController.GetSingleAbsen, jwtMiddleware)
 	absens.GET("/", r.absenController.GetPageAbsen)
 	absens.DELETE("/:absen_id/", r.absenController.DeleteAbsen, jwtMiddleware)
+
+	// jadwal
+	jadwal := v1.Group("/jadwal")
+	jadwal.GET("/", controller.GetJadwalsController)
+	jadwal.GET("/:id/", controller.GetJadwalController)
+	jadwal.POST("/", controller.CreateJadwalController)
+	jadwal.PUT("/:id/", controller.UpdateJadwalController)
+	jadwal.DELETE("/:id/", controller.DeleteJadwalController)
+
 }
