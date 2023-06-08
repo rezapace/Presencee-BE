@@ -12,7 +12,6 @@ func CreateMahasiswa(mahasiswa *model.Mahasiswa) error {
 	return nil
 }
 
-
 func GetMahasiswas() (mahasiswas []model.Mahasiswa, err error) {
 	if err = config.DB.Model(&model.Mahasiswa{}).Find(&mahasiswas).Error; err != nil {
 		return
@@ -22,6 +21,13 @@ func GetMahasiswas() (mahasiswas []model.Mahasiswa, err error) {
 
 func GetMahasiswaByID(id uint) (mahasiswa model.Mahasiswa, err error) {
 	if err = config.DB.First(&mahasiswa, id).Error; err != nil {
+		return
+	}
+	return
+}
+
+func GetMahasiswaByUserID(userID uint) (mahasiswa model.Mahasiswa, err error) {
+	if err = config.DB.Where(model.Mahasiswa{UserID: userID}).First(&mahasiswa).Error; err != nil {
 		return
 	}
 	return
