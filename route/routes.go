@@ -70,6 +70,14 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	dosen.PUT("/:id/", controller.UpdateDosenController)
 	dosen.DELETE("/:id/", controller.DeleteDosenController)
 
+	// room
+	room := v1.Group("/room")
+	room.GET("/", controller.GetRoomsController)
+	room.GET("/:id/", controller.GetRoomController)
+	room.POST("/", controller.CreateRoomController)
+	room.PUT("/:id/", controller.UpdateRoomController)
+	room.DELETE("/:id/", controller.DeleteRoomController)
+
 	// matakuliah
 	matakuliah := v1.Group("/matakuliah")
 	matakuliah.GET("/", controller.GetMatakuliahsController)
