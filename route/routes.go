@@ -78,6 +78,14 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	absens.GET("/", r.absenController.GetPageAbsen)
 	absens.DELETE("/:absen_id/", r.absenController.DeleteAbsen, jwtMiddleware)
 
+	// Jurusan
+	jurusan := v1.Group("/jurusan")
+	jurusan.GET("/", controller.GetJurusansController)
+	jurusan.GET("/:id/", controller.GetJurusanController)
+	jurusan.POST("/", controller.CreateJurusanController)
+	jurusan.PUT("/:id/", controller.UpdateJurusanController)
+	jurusan.DELETE("/:id/", controller.DeleteJurusanController)
+  
 	// jadwal
 	jadwal := v1.Group("/jadwal")
 	jadwal.GET("/", controller.GetJadwalsController)
@@ -85,5 +93,4 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	jadwal.POST("/", controller.CreateJadwalController)
 	jadwal.PUT("/:id/", controller.UpdateJadwalController)
 	jadwal.DELETE("/:id/", controller.DeleteJadwalController)
-
 }
