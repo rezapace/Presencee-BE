@@ -40,6 +40,9 @@ var (
 	// ErrUserNotFound is used when the user is not found in the database
 	ErrUserNotFound = errors.New("user not found")
 
+	// ErrUserNotFound is used when the user is not found in the database
+	ErrAbsenNotFound = errors.New("absen not found")
+
 	// ErrItemAlreadyExist is used when the item name is already exist in the database
 	ErrItemAlreadyExist = errors.New("item with provided name already exist")
 

@@ -21,6 +21,14 @@ func GetDosen(id uint) (model.Dosen, error) {
 	return dosen, nil
 }
 
+func GetDosenByUserID(userID uint) (model.Dosen, error) {
+	dosen, err := database.GetDosenByID(userID)
+	if err != nil {
+		return model.Dosen{}, err
+	}
+	return dosen, nil
+}
+
 func GetListDosens() ([]model.Dosen, error) {
 	dosens, err := database.GetDosens()
 	if err != nil {
