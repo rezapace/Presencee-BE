@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"presensee_project/model"
 	"presensee_project/model/payload" // Ubah import path ini
-	"presensee_project/usecase"
+	usecase "presensee_project/usecase/impl"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -51,24 +51,24 @@ func CreateMahasiswaController(c echo.Context) error {
 	}
 
 	// Check if the user_id exists in the users table
-	_, err := usecase.GetUser(requestPayload.UserID)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid user_id")
-	}
+	// _, err := usecase.GetUser(requestPayload.UserID)
+	// if err != nil {
+	// 	return echo.NewHTTPError(http.StatusBadRequest, "Invalid user_id")
+	// }
 
 	mahasiswa := &model.Mahasiswa{
-		Name:   requestPayload.Name,
-		Email:  requestPayload.Email,
-		NIM:    requestPayload.NIM,
-		Image:  requestPayload.Image,
-		Phone:  requestPayload.Phone,
-		Jurusan:  requestPayload.Jurusan,
-		TahunMasuk:  requestPayload.TahunMasuk,
-		IPK:  requestPayload.IPK,
-		UserID: requestPayload.UserID,
+		Name:       requestPayload.Name,
+		Email:      requestPayload.Email,
+		NIM:        requestPayload.NIM,
+		Image:      requestPayload.Image,
+		Phone:      requestPayload.Phone,
+		Jurusan:    requestPayload.Jurusan,
+		TahunMasuk: requestPayload.TahunMasuk,
+		IPK:        requestPayload.IPK,
+		UserID:     requestPayload.UserID,
 	}
 
-	err = usecase.CreateMahasiswa(mahasiswa)
+	err := usecase.CreateMahasiswa(mahasiswa)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -113,7 +113,7 @@ func UpdateMahasiswaController(c echo.Context) error {
 	mahasiswaToUpdate.Phone = updatedMahasiswa.Phone
 	mahasiswaToUpdate.Jurusan = updatedMahasiswa.Jurusan
 	mahasiswaToUpdate.TahunMasuk = updatedMahasiswa.TahunMasuk
-	mahasiswaToUpdate.IPK = updatedMahasiswa.IPK	
+	mahasiswaToUpdate.IPK = updatedMahasiswa.IPK
 	mahasiswaToUpdate.UserID = updatedMahasiswa.UserID
 
 	err = usecase.UpdateMahasiswa(&mahasiswaToUpdate) // Pass the pointer to mahasiswaToUpdate
