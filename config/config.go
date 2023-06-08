@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"presensee_project/model"
 
 	"gorm.io/driver/mysql"
@@ -10,21 +11,28 @@ import (
 
 var DB *gorm.DB
 
+func LoadConfig() map[string]string {
+	env := make(map[string]string)
+
+	env["DB_HOST"] = os.Getenv("DB_HOST")
+	env["DB_PORT"] = os.Getenv("DB_PORT")
+	env["DB_USER"] = os.Getenv("DB_USER")
+	env["DB_PASS"] = os.Getenv("DB_PASS")
+	env["DB_NAME"] = os.Getenv("DB_NAME")
+	env["JWT_SECRET"] = os.Getenv("JWT_SECRET")
+
+	return env
+}
+
 func InitDB() *gorm.DB {
-	config := map[string]string{
-		"DB_Username": "root",
-		"DB_Password": "",
-		"DB_Port":     "3306",
-		"DB_Host":     "localhost",
-		"DB_Name":     "caps",
-	}
+	env := LoadConfig()
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		config["DB_Username"],
-		config["DB_Password"],
-		config["DB_Host"],
-		config["DB_Port"],
-		config["DB_Name"])
+		env["DB_USER"],
+		env["DB_PASS"],
+		env["DB_HOST"],
+		env["DB_PORT"],
+		env["DB_NAME"])
 
 	var e error
 	DB, e = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
@@ -36,5 +44,5 @@ func InitDB() *gorm.DB {
 }
 
 func InitMigrate() {
-	DB.AutoMigrate(&model.User{})
+	DB.AutoMigrate(&model.User{}, &model.Mahasiswa{}, &model.Dosen{}, &model.Jadwal{})
 }
