@@ -1,12 +1,14 @@
 package payload
 
+import "presensee_project/model"
+
 type CreateJadwalRequest struct {
-	Hari    string `json:"hari" validate:"required"`
-	Matkul  string `json:"matkul" validate:"required"`
-	Ruangan string `json:"ruangan" validate:"required"`
-	Jam     string `json:"jam" validate:"required"`
-	Name    string `json:"name" validate:"required"`
-	UserID  uint   `json:"user_id" form:"user_id" validate:"required"`
+	Hari         string `json:"hari" validate:"required"`
+	MatakuliahID uint   `json:"matakuliah_id" validate:"required"`
+	RoomID       uint   `json:"room_id" validate:"required"`
+	Jam          string `json:"jam" validate:"required"`
+	Name         string `json:"name" validate:"required"`
+	UserID       uint   `json:"user_id" form:"user_id" validate:"required"`
 }
 
 type CreateJadwalResponse struct {
@@ -14,12 +16,12 @@ type CreateJadwalResponse struct {
 }
 
 type UpdateJadwalRequest struct {
-	Hari    string `json:"hari" validate:"required"`
-	Matkul  string `json:"matkul" validate:"required"`
-	Ruangan string `json:"ruangan" validate:"required"`
-	Jam     string `json:"jam" validate:"required"`
-	Name    string `json:"name" validate:"required"`
-	UserID  uint   `json:"user_id" form:"user_id" validate:"required"`
+	Hari         string `json:"hari" validate:"required"`
+	MatakuliahID uint   `json:"matakuliah_id" validate:"required"`
+	RoomID       uint   `json:"room_id" validate:"required"`
+	Jam          string `json:"jam" validate:"required"`
+	Name         string `json:"name" validate:"required"`
+	UserID       uint   `json:"user_id" form:"user_id" validate:"required"`
 }
 
 type UpdateJadwalResponse struct {
@@ -27,12 +29,14 @@ type UpdateJadwalResponse struct {
 }
 
 type GetJadwalResponse struct {
-	JadwalID  uint   `json:"jadwal_id"`
-	Hari      string `json:"hari"`
-	Matkul    string `json:"matkul"`
-	Ruangan   string `json:"ruangan"`
-	Jam       string `json:"jam"`
-	NamaDosen string `json:"nama_dosen"`
+	JadwalID   uint             `json:"jadwal_id"`
+	Hari       string           `json:"hari"`
+	Matkul     string           `json:"matkul"`
+	Ruangan    string           `json:"ruangan"`
+	Jam        string           `json:"jam"`
+	NamaDosen  string           `json:"nama_dosen"`
+	Matakuliah model.Matakuliah `json:"matakuliah"`
+	Room       model.Room       `json:"room"`
 }
 
 type GetJadwalsResponse struct {
