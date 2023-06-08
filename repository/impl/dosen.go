@@ -26,6 +26,13 @@ func GetDosenByID(id uint) (dosen model.Dosen, err error) {
 	return
 }
 
+func GetDosenByUserID(userID uint) (dosen model.Dosen, err error) {
+	if err = config.DB.Where(model.Dosen{UserID: userID}).First(&dosen).Error; err != nil {
+		return
+	}
+	return
+}
+
 func UpdateDosen(dosen *model.Dosen) error {
 	if err := config.DB.Save(dosen).Error; err != nil {
 		return err

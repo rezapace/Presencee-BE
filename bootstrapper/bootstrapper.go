@@ -3,10 +3,10 @@ package bootsrapper
 import (
 	"time"
 
-	userControllerPkg "presensee_project/controller"
-	userRepositoryPkg "presensee_project/repository/impl"
+	ControllerPkg "presensee_project/controller"
+	RepositoryPkg "presensee_project/repository/impl"
 	routes "presensee_project/route"
-	userServicePkg "presensee_project/usecase/impl"
+	ServicePkg "presensee_project/usecase/impl"
 	jwtPkg "presensee_project/utils/jwt_service/impl"
 	passwordPkg "presensee_project/utils/password/impl"
 
@@ -20,10 +20,15 @@ func InitController(e *echo.Echo, db *gorm.DB, conf map[string]string) {
 	jwtService := jwtPkg.NewJWTService(conf["JWT_SECRET"], 1*time.Hour)
 
 	// User
-	userRepository := userRepositoryPkg.NewUserRepositoryImpl(db)
-	userService := userServicePkg.NewUserServiceImpl(userRepository, passwordFunc, jwtService)
-	userController := userControllerPkg.NewUserController(userService, jwtService)
+	userRepository := RepositoryPkg.NewUserRepositoryImpl(db)
+	userService := ServicePkg.NewUserServiceImpl(userRepository, passwordFunc, jwtService)
+	userController := ControllerPkg.NewUserController(userService, jwtService)
 
-	route := routes.NewRoutes(userController)
+	// Absen
+	absenRepository := RepositoryPkg.NewAbsenRepositoryImpl(db)
+	absenService := ServicePkg.NewAbsenServiceImpl(absenRepository)
+	absenController := ControllerPkg.NewAbsenController(absenService, jwtService)
+
+	route := routes.NewRoutes(userController, absenController)
 	route.Init(e, conf)
 }
