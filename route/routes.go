@@ -70,6 +70,15 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	dosen.PUT("/:id/", controller.UpdateDosenController)
 	dosen.DELETE("/:id/", controller.DeleteDosenController)
 
+	// matakuliah
+	matakuliah := v1.Group("/matakuliah")
+	matakuliah.GET("/", controller.GetMatakuliahsController)
+	matakuliah.GET("/:id/", controller.GetMatakuliahController)
+	matakuliah.GET("/:name/", controller.GetMatakuliahByNameAndDateController)
+	matakuliah.POST("/", controller.CreateMatakuliahController)
+	matakuliah.PUT("/:id/", controller.UpdateMatakuliahController)
+	matakuliah.DELETE("/:id/", controller.DeleteMatakuliahController)
+
 	// absen
 	absens := v1.Group("/absens")
 	absens.POST("/", r.absenController.CreateAbsen)
@@ -92,5 +101,5 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	jadwal.GET("/:id/", controller.GetJadwalController)
 	jadwal.POST("/", controller.CreateJadwalController)
 	jadwal.PUT("/:id/", controller.UpdateJadwalController)
-	jadwal.DELETE("/:id/", controller.DeleteJadwalController)
+	jadwal.DELETE("/:id/", controller.DeleteJadwalController
 }
