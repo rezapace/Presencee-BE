@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"log"
 
 	"presensee_project/model/payload"
 	"presensee_project/repository"
@@ -58,15 +59,26 @@ func (d *AbsenServiceImpl) GetSingleAbsen(ctx context.Context, absenID uint) (*p
 	return absenResponse, nil
 }
 
-func (u *AbsenServiceImpl) GetPageAbsens(ctx context.Context, page int, limit int) (*payload.GetPageAbsensResponse, error) {
-	offset := (page - 1) * limit
-
-	absens, err := u.absenRepository.GetPageAbsens(ctx, limit, offset)
+func (u *AbsenServiceImpl) GetPageAbsens(ctx context.Context, page int, limit int, filter *payload.AbsenFilter) (*payload.GetPageAbsensResponse, int64, error) {
+	count, err := u.absenRepository.CountAbsen(ctx, filter)
 	if err != nil {
-		return nil, err
+		log.Println("error while counting absens: ", err)
+		return nil, 0, err
 	}
 
-	return payload.NewGetPageAbsensResponse(absens), nil
+	if count == 0 {
+		return nil, 0, nil
+	}
+
+	offset := (page - 1) * limit
+
+	absens, err := u.absenRepository.GetPageAbsens(ctx, limit, offset, filter)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	absenPayload := payload.NewGetPageAbsensResponse(absens)
+	return absenPayload, count, nil
 }
 
 func (u *AbsenServiceImpl) UpdateAbsen(ctx context.Context, absenID uint, updateAbsen *payload.UpdateAbsenRequest) error {

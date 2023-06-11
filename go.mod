@@ -3,6 +3,7 @@ module presensee_project
 go 1.20
 
 require (
+	github.com/Masterminds/squirrel v1.5.4
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.14.0
 	github.com/google/uuid v1.3.0
@@ -12,7 +13,11 @@ require (
 	gorm.io/gorm v1.24.6
 )
 
-require github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+require (
+	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
+	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
+)
 
 require (
 	github.com/go-playground/locales v0.14.1 // indirect
