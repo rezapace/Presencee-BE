@@ -8,6 +8,7 @@ import (
 	"presensee_project/utils"
 	"presensee_project/utils/jwt_service"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -106,12 +107,11 @@ func (u *AbsenController) GetSingleAbsen(c echo.Context) error {
 }
 
 func (u *AbsenController) GetPageAbsen(c echo.Context) error {
-
 	page := c.QueryParam("page")
 	if page == "" {
 		page = "1"
 	}
-	pageInt, err := strconv.ParseInt(page, 10, 64)
+	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrInvalidNumber.Error())
 	}
@@ -120,12 +120,60 @@ func (u *AbsenController) GetPageAbsen(c echo.Context) error {
 	if limit == "" {
 		limit = "20"
 	}
-	limitInt, err := strconv.ParseInt(limit, 10, 64)
+	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrInvalidNumber.Error())
 	}
 
-	absen, err := u.absenService.GetPageAbsens(c.Request().Context(), int(pageInt), int(limitInt))
+	userIDStr := c.QueryParam("user_id")
+	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid user_id")
+	}
+
+	mahasiswaIDStr := c.QueryParam("mahasiswa_id")
+	mahasiswaID, err := strconv.ParseUint(mahasiswaIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid mahasiswa_id")
+	}
+
+	jadwalIDStr := c.QueryParam("jadwal_id")
+	jadwalID, err := strconv.ParseUint(jadwalIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid jadwal_id")
+	}
+
+	absenIDStr := c.QueryParam("absen_id")
+	absenID, err := strconv.ParseUint(absenIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid absen_id")
+	}
+
+	createdAfterStr := c.QueryParam("created_after")
+	createdAfterTime, err := time.Parse(time.RFC3339, createdAfterStr)
+	if err != nil {
+		// Handle error when the provided value is not a valid time
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid created_after")
+	}
+
+	createdBeforeStr := c.QueryParam("created_before")
+	createdBeforeTime, err := time.Parse(time.RFC3339, createdBeforeStr)
+	if err != nil {
+		// Handle error when the provided value is not a valid time
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid created_before")
+	}
+
+	filter := payload.AbsenFilter{
+		UserID:        uint(userID),
+		MahasiswaID:   uint(mahasiswaID),
+		JadwalID:      uint(jadwalID),
+		Status:        c.QueryParam("status"),
+		ID:            uint(absenID),
+		CreatedAfter:  createdAfterTime,
+		CreatedBefore: createdBeforeTime,
+	}
+
+	absen, count, err := u.absenService.GetPageAbsens(c.Request().Context(), int(pageInt), int(limitInt), &filter)
 	if err != nil {
 		if err == utils.ErrAbsenNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -135,9 +183,10 @@ func (u *AbsenController) GetPageAbsen(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"message": "success getting document",
+		"message": "success getting absen",
 		"data":    absen,
 		"meta": echo.Map{
+			"total": count,
 			"page":  pageInt,
 			"limit": limitInt,
 		},

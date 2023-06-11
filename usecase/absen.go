@@ -9,7 +9,7 @@ import (
 type AbsenService interface {
 	CreateAbsen(ctx context.Context, absen *payload.CreateAbsenRequest) error
 	GetSingleAbsen(ctx context.Context, absenID uint) (*payload.GetSingleAbsenResponse, error)
-	GetPageAbsens(ctx context.Context, page int, limit int) (*payload.GetPageAbsensResponse, error)
+	GetPageAbsens(ctx context.Context, page int, limit int, filter *payload.AbsenFilter) (*payload.GetPageAbsensResponse, int64, error)
 	UpdateAbsen(ctx context.Context, absenID uint, request *payload.UpdateAbsenRequest) error
 	DeleteAbsen(ctx context.Context, absenID uint) error
 }
