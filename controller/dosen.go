@@ -38,22 +38,6 @@ func GetDosenController(c echo.Context) error {
 	})
 }
 
-// GetDosenController returns dosen data based on ID
-func GetDosenByUserIDController(c echo.Context) error {
-	userID, err := strconv.ParseUint(c.Param("user_id"), 10, 32)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
-	}
-	dosen, err := usecase.GetDosenByUserID(uint(userID))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"dosen":  dosen,
-	})
-}
-
 // CreateDosenController creates a new dosen
 func CreateDosenController(c echo.Context) error {
 	requestPayload := new(payload.CreateDosenRequest)

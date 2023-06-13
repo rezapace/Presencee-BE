@@ -72,9 +72,12 @@ func (u *UserController) LoginUser(c echo.Context) error {
 		}
 	}
 
+	userDetail, err := u.userService.FindByEmail(c.Request().Context(), user.Email)
+
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "success login",
 		"token":   token,
+		"data":    userDetail,
 	})
 }
 

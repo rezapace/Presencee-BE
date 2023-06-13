@@ -203,6 +203,12 @@ func (u *AbsenController) GetFilterAbsen(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid created_before")
 	}
 
+	isKonfirmasiStr := c.QueryParam("is_konfirmasi")
+	isKonfirmasi, err := strconv.ParseBool(isKonfirmasiStr)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid is_konfirmasi")
+	}
+
 	filter := payload.AbsenFilter{
 		UserID:        uint(userID),
 		MahasiswaID:   uint(mahasiswaID),
@@ -211,6 +217,8 @@ func (u *AbsenController) GetFilterAbsen(c echo.Context) error {
 		ID:            uint(absenID),
 		CreatedAfter:  createdAfterTime,
 		CreatedBefore: createdBeforeTime,
+		Matakuliah:    c.QueryParam("matakuliah"),
+		IsKonfirmasi:  bool(isKonfirmasi),
 	}
 
 	absen, count, err := u.absenService.GetFilterAbsens(c.Request().Context(), int(pageInt), int(limitInt), &filter)
@@ -278,11 +286,39 @@ func (u *AbsenController) GetRiwayat(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid is_konfirmasi")
 	}
 
-	matakuliahValues := []string{"Bahasa Indonesia", "Matematika", "Metode Penelitian", "Bahasa Inggris"}
+	matakuliahValues := []string{"Bahasa Indonesia", "Pendidikan Pancasila", "Metodologi Penelitian", "Ilustrasi", "Multimedia Interaktif", "Copywriting", "Kewirausahaan"}
+	statusValues := []string{"Hadir", "Izin", "Sakit", "Alpa", "Dispensasi"}
 
-	result := make(map[string]int64)
+	result := make(map[string]map[string]int64)
 
 	for _, matakuliah := range matakuliahValues {
+		matakuliahStatusCount := make(map[string]int64)
+
+		for _, status := range statusValues {
+			filter := payload.AbsenFilter{
+				UserID:        uint(userID),
+				MahasiswaID:   uint(mahasiswaID),
+				JadwalID:      uint(jadwalID),
+				Status:        status,
+				ID:            uint(absenID),
+				CreatedAfter:  createdAfterTime,
+				CreatedBefore: createdBeforeTime,
+				Matakuliah:    matakuliah,
+				IsKonfirmasi:  bool(isKonfirmasi),
+			}
+
+			count, err := u.absenService.CountRiwayatMatakuliah(c.Request().Context(), &filter)
+			if err != nil {
+				if err == utils.ErrAbsenNotFound {
+					return echo.NewHTTPError(http.StatusNotFound, err.Error())
+				}
+
+				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			}
+
+			matakuliahStatusCount[status] = count
+		}
+
 		filter := payload.AbsenFilter{
 			UserID:        uint(userID),
 			MahasiswaID:   uint(mahasiswaID),
@@ -295,7 +331,7 @@ func (u *AbsenController) GetRiwayat(c echo.Context) error {
 			IsKonfirmasi:  bool(isKonfirmasi),
 		}
 
-		count, err := u.absenService.CountRiwayatMatakuliah(c.Request().Context(), &filter)
+		totalCount, err := u.absenService.CountRiwayatMatakuliah(c.Request().Context(), &filter)
 		if err != nil {
 			if err == utils.ErrAbsenNotFound {
 				return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -304,7 +340,8 @@ func (u *AbsenController) GetRiwayat(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 
-		result[matakuliah] = count
+		matakuliahStatusCount["Total"] = totalCount
+		result[matakuliah] = matakuliahStatusCount
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{

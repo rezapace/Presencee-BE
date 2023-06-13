@@ -110,6 +110,10 @@ func (u *AbsenRepositoryImpl) GetFilterAbsens(ctx context.Context, limit int, of
 		db = db.Where("status = ?", filter.Status)
 	}
 
+	if filter.Matakuliah != "" {
+		db = db.Where("matakuliah = ?", filter.Matakuliah)
+	}
+
 	err := db.Order("created_at DESC").
 		Offset(offset).
 		Limit(limit).
@@ -228,6 +232,10 @@ func (u *AbsenRepositoryImpl) CountAbsenFilter(ctx context.Context, filter *payl
 
 	if filter.Status != "" {
 		query = query.Where("status = ?", filter.Status)
+	}
+
+	if filter.Matakuliah != "" {
+		query = query.Where("matakuliah = ?", filter.Matakuliah)
 	}
 
 	rows, err := query.RunWith(db).QueryContext(ctx)

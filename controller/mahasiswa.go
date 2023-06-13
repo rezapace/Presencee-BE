@@ -38,22 +38,6 @@ func GetMahasiswaController(c echo.Context) error {
 	})
 }
 
-// GetMahasiswaController returns mahasiswa data based on ID
-func GetMahasiswaByUserIDController(c echo.Context) error {
-	userID, err := strconv.ParseUint(c.Param("user_id"), 10, 32)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
-	}
-	mahasiswa, err := usecase.GetMahasiswaByUserID(uint(userID))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status":    "success",
-		"mahasiswa": mahasiswa,
-	})
-}
-
 // CreateMahasiswaController creates a new mahasiswa
 func CreateMahasiswaController(c echo.Context) error {
 	requestPayload := new(payload.CreateMahasiswaRequest)
