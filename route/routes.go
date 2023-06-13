@@ -93,6 +93,8 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	absens.PUT("/", r.absenController.UpdateAbsen, jwtMiddleware)
 	absens.GET("/:absen_id/", r.absenController.GetSingleAbsen, jwtMiddleware)
 	absens.GET("/", r.absenController.GetPageAbsen)
+	absens.GET("/riwayat/", r.absenController.GetRiwayat)
+	absens.GET("/filter/", r.absenController.GetFilterAbsen)
 	absens.DELETE("/:absen_id/", r.absenController.DeleteAbsen, jwtMiddleware)
 
 	// Jurusan

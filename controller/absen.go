@@ -107,6 +107,46 @@ func (u *AbsenController) GetSingleAbsen(c echo.Context) error {
 }
 
 func (u *AbsenController) GetPageAbsen(c echo.Context) error {
+
+	page := c.QueryParam("page")
+	if page == "" {
+		page = "1"
+	}
+	pageInt, err := strconv.ParseInt(page, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrInvalidNumber.Error())
+	}
+
+	limit := c.QueryParam("limit")
+	if limit == "" {
+		limit = "20"
+	}
+	limitInt, err := strconv.ParseInt(limit, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrInvalidNumber.Error())
+	}
+
+	absen, count, err := u.absenService.GetPageAbsens(c.Request().Context(), int(pageInt), int(limitInt))
+	if err != nil {
+		if err == utils.ErrAbsenNotFound {
+			return echo.NewHTTPError(http.StatusNotFound, err.Error())
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "success getting document",
+		"data":    absen,
+		"meta": echo.Map{
+			"total": count,
+			"page":  pageInt,
+			"limit": limitInt,
+		},
+	})
+}
+
+func (u *AbsenController) GetFilterAbsen(c echo.Context) error {
 	page := c.QueryParam("page")
 	if page == "" {
 		page = "1"
@@ -173,7 +213,7 @@ func (u *AbsenController) GetPageAbsen(c echo.Context) error {
 		CreatedBefore: createdBeforeTime,
 	}
 
-	absen, count, err := u.absenService.GetPageAbsens(c.Request().Context(), int(pageInt), int(limitInt), &filter)
+	absen, count, err := u.absenService.GetFilterAbsens(c.Request().Context(), int(pageInt), int(limitInt), &filter)
 	if err != nil {
 		if err == utils.ErrAbsenNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -190,6 +230,86 @@ func (u *AbsenController) GetPageAbsen(c echo.Context) error {
 			"page":  pageInt,
 			"limit": limitInt,
 		},
+	})
+}
+
+func (u *AbsenController) GetRiwayat(c echo.Context) error {
+	userIDStr := c.QueryParam("user_id")
+	userID, err := strconv.ParseUint(userIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid user_id")
+	}
+
+	mahasiswaIDStr := c.QueryParam("mahasiswa_id")
+	mahasiswaID, err := strconv.ParseUint(mahasiswaIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid mahasiswa_id")
+	}
+
+	jadwalIDStr := c.QueryParam("jadwal_id")
+	jadwalID, err := strconv.ParseUint(jadwalIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid jadwal_id")
+	}
+
+	absenIDStr := c.QueryParam("absen_id")
+	absenID, err := strconv.ParseUint(absenIDStr, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid absen_id")
+	}
+
+	createdAfterStr := c.QueryParam("created_after")
+	createdAfterTime, err := time.Parse(time.RFC3339, createdAfterStr)
+	if err != nil {
+		// Handle error when the provided value is not a valid time
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid created_after")
+	}
+
+	createdBeforeStr := c.QueryParam("created_before")
+	createdBeforeTime, err := time.Parse(time.RFC3339, createdBeforeStr)
+	if err != nil {
+		// Handle error when the provided value is not a valid time
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid created_before")
+	}
+
+	isKonfirmasiStr := c.QueryParam("is_konfirmasi")
+	isKonfirmasi, err := strconv.ParseBool(isKonfirmasiStr)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid is_konfirmasi")
+	}
+
+	matakuliahValues := []string{"Bahasa Indonesia", "Matematika", "Metode Penelitian", "Bahasa Inggris"}
+
+	result := make(map[string]int64)
+
+	for _, matakuliah := range matakuliahValues {
+		filter := payload.AbsenFilter{
+			UserID:        uint(userID),
+			MahasiswaID:   uint(mahasiswaID),
+			JadwalID:      uint(jadwalID),
+			Status:        c.QueryParam("status"),
+			ID:            uint(absenID),
+			CreatedAfter:  createdAfterTime,
+			CreatedBefore: createdBeforeTime,
+			Matakuliah:    matakuliah,
+			IsKonfirmasi:  bool(isKonfirmasi),
+		}
+
+		count, err := u.absenService.CountRiwayatMatakuliah(c.Request().Context(), &filter)
+		if err != nil {
+			if err == utils.ErrAbsenNotFound {
+				return echo.NewHTTPError(http.StatusNotFound, err.Error())
+			}
+
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+
+		result[matakuliah] = count
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "success getting absen",
+		"meta":    result,
 	})
 }
 
