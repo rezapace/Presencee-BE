@@ -59,7 +59,7 @@ func (u *UserRepositoryImpl) GetSingleUser(ctx context.Context, userID uint) (*m
 		Where("id = ?", userID).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, utils.ErrItemNotFound
+			return nil, utils.ErrUserNotFound
 		}
 
 		return nil, err
@@ -117,7 +117,7 @@ func (d *UserRepositoryImpl) DeleteUser(ctx context.Context, userID uint) error 
 	}
 
 	if result.RowsAffected == 0 {
-		return utils.ErrItemNotFound
+		return utils.ErrUserNotFound
 	}
 
 	return nil

@@ -21,6 +21,14 @@ func GetMahasiswa(id uint) (model.Mahasiswa, error) {
 	return mahasiswa, nil
 }
 
+func GetMahasiswaByUserID(userID uint) (model.Mahasiswa, error) {
+	mahasiswa, err := database.GetMahasiswaByUserID(userID)
+	if err != nil {
+		return model.Mahasiswa{}, err
+	}
+	return mahasiswa, nil
+}
+
 func GetListMahasiswas() ([]model.Mahasiswa, error) {
 	mahasiswas, err := database.GetMahasiswas()
 	if err != nil {

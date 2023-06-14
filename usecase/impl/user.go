@@ -5,6 +5,7 @@ import (
 
 	"presensee_project/model/payload"
 	"presensee_project/repository"
+	database "presensee_project/repository/impl"
 	"presensee_project/usecase"
 	"presensee_project/utils"
 	"presensee_project/utils/jwt_service"
@@ -71,6 +72,17 @@ func (u *UserServiceImpl) LogInUser(ctx context.Context, user *payload.UserLogin
 	return token, nil
 }
 
+func (u *UserServiceImpl) FindByEmail(ctx context.Context, email string) (*payload.GetSingleUserResponse, error) {
+	user, err := u.userRepository.FindByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+
+	var userResponse = payload.NewGetSingleUserResponse(user)
+
+	return userResponse, nil
+}
+
 func (d *UserServiceImpl) GetSingleUser(ctx context.Context, userID uint) (*payload.GetSingleUserResponse, error) {
 	user, err := d.userRepository.GetSingleUser(ctx, userID)
 	if err != nil {
@@ -78,6 +90,22 @@ func (d *UserServiceImpl) GetSingleUser(ctx context.Context, userID uint) (*payl
 	}
 
 	var userResponse = payload.NewGetSingleUserResponse(user)
+
+	if user.Role == "Mahasiswa" {
+		mahasiswa, err := database.GetMahasiswaByUserID(user.ID)
+		if err != nil {
+			return nil, err
+		}
+		userResponse.Mahasiswa = mahasiswa
+	}
+
+	if user.Role == "Dosen" {
+		dosen, err := database.GetDosenByUserID(user.ID)
+		if err != nil {
+			return nil, err
+		}
+		userResponse.Dosen = dosen
+	}
 
 	return userResponse, nil
 }

@@ -44,9 +44,11 @@ func (u *UserController) SignUpUser(c echo.Context) error {
 		}
 	}
 
+	userDetail, err := u.userService.FindByEmail(c.Request().Context(), user.Email)
+
 	return c.JSON(http.StatusCreated, echo.Map{
 		"message": "success creating user",
-		"data":    user,
+		"data":    userDetail,
 	})
 }
 
@@ -70,9 +72,12 @@ func (u *UserController) LoginUser(c echo.Context) error {
 		}
 	}
 
+	userDetail, err := u.userService.FindByEmail(c.Request().Context(), user.Email)
+
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "success login",
 		"token":   token,
+		"data":    userDetail,
 	})
 }
 
@@ -96,7 +101,7 @@ func (u *UserController) GetSingleUser(c echo.Context) error {
 	switch {
 	case role == "pegawai":
 		fallthrough
-	case role == "admin":
+	case role == "admin" || role == "Mahasiswa" || role == "Dosen":
 		return c.JSON(http.StatusOK, echo.Map{
 			"message": "success getting user",
 			"data":    user,

@@ -14,6 +14,7 @@ type Mahasiswa struct {
 	Jurusan    string `json:"jurusan" form:"jurusan"`
 	TahunMasuk string `json:"tahun_masuk" form:"tahun_masuk"`
 	IPK        string `json:"ipk" form:"ipk"`
+	RoomID     string `json:"room_id" form:"room_id"`
 	UserID     uint   `json:"user_id" form:"user_id"`
+	Absen      Absen  `json:"-" form:"absen"`
 }
-

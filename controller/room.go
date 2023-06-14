@@ -3,44 +3,44 @@ package controller
 import (
 	"net/http"
 	"presensee_project/model"
-	"presensee_project/model/payload"
+	"presensee_project/model/payload" // Ubah import path ini
 	usecase "presensee_project/usecase/impl"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-// GetJadwalsController returns all jadwal data
-func GetJadwalsController(c echo.Context) error {
-	jadwals, err := usecase.GetListJadwals()
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status":  "success",
-		"jadwals": jadwals,
-	})
-}
-
-// GetJadwalController returns jadwal data based on ID
-func GetJadwalController(c echo.Context) error {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
-	}
-	jadwal, err := usecase.GetJadwal(uint(id))
+// GetDosensController returns all dosen data
+func GetRoomsController(c echo.Context) error {
+	rooms, err := usecase.GetListRooms()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "success",
-		"jadwal": jadwal,
+		"rooms":  rooms,
 	})
 }
 
-// CreateJadwalController creates a new jadwal
-func CreateJadwalController(c echo.Context) error {
-	requestPayload := new(payload.CreateJadwalRequest)
+// GetDosenController returns dosen data based on ID
+func GetRoomController(c echo.Context) error {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	room, err := usecase.GetRoom(uint(id))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"room":   room,
+	})
+}
+
+// CreateDosenController creates a new dosen
+func CreateRoomController(c echo.Context) error {
+	requestPayload := new(payload.CreateRoomRequest)
 
 	// Bind and validate the payload
 	if err := c.Bind(requestPayload); err != nil {
@@ -50,89 +50,83 @@ func CreateJadwalController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	jadwal := &model.Jadwal{
-		Hari:         requestPayload.Hari,
-		MatakuliahID: requestPayload.MatakuliahID,
-		RoomID:       requestPayload.RoomID,
-		Jam:          requestPayload.Jam,
-		Name:         requestPayload.Name,
-		UserID:       requestPayload.UserID,
+	room := &model.Room{
+		Name:     requestPayload.Name,
+		Location: requestPayload.Location,
+		Seat:     requestPayload.Seat,
 	}
 
-	err := usecase.CreateJadwal(jadwal)
+	err := usecase.CreateRoom(room)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	responsePayload := &payload.CreateJadwalResponse{
-		JadwalID: jadwal.ID,
+	responsePayload := &payload.CreateRoomResponse{
+		RoomID: room.ID,
 	}
 
 	return c.JSON(http.StatusCreated, map[string]interface{}{
 		"status": "success",
-		"jadwal": responsePayload,
+		"room":   responsePayload,
 	})
 }
 
-// UpdateJadwalController updates jadwal data based on ID
-func UpdateJadwalController(c echo.Context) error {
+// UpdateRoomController updates dosen data based on ID
+func UpdateRoomController(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
 
-	jadwalToUpdate, err := usecase.GetJadwal(uint(id))
+	roomToUpdate, err := usecase.GetRoom(uint(id))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	updatedJadwal := new(payload.UpdateJadwalRequest)
+	updatedRoom := new(payload.UpdateRoomRequest)
 
 	// Bind and validate the payload
-	if err := c.Bind(updatedJadwal); err != nil {
+	if err := c.Bind(updatedRoom); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if err := c.Validate(updatedJadwal); err != nil {
+	if err := c.Validate(updatedRoom); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	// Update jadwal data
-	jadwalToUpdate.Hari = updatedJadwal.Hari
-	jadwalToUpdate.MatakuliahID = updatedJadwal.MatakuliahID
-	jadwalToUpdate.RoomID = updatedJadwal.RoomID
-	jadwalToUpdate.Jam = updatedJadwal.Jam
-	jadwalToUpdate.Name = updatedJadwal.Name
-	jadwalToUpdate.UserID = updatedJadwal.UserID
+	// Update dosen data
+	roomToUpdate.Name = updatedRoom.Name
+	roomToUpdate.Location = updatedRoom.Location
+	roomToUpdate.Seat = updatedRoom.Seat
 
-	err = usecase.UpdateJadwal(&jadwalToUpdate) // Pass the pointer to jadwalToUpdate
+	err = usecase.UpdateRoom(&roomToUpdate) // Pass the pointer to dosenToUpdate
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	response := &payload.UpdateJadwalResponse{
-		JadwalID: jadwalToUpdate.ID,
+	response := &payload.UpdateRoomResponse{
+		RoomID: roomToUpdate.ID,
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "success",
-		"jadwal": response,
+		"room":   response,
 	})
 }
 
-// DeleteJadwalController deletes jadwal data based on ID
-func DeleteJadwalController(c echo.Context) error {
+// DeleteDosenController deletes dosen data based on ID
+func DeleteRoomController(c echo.Context) error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
 
-	err = usecase.DeleteJadwal(uint(id))
+	err = usecase.DeleteRoom(uint(id))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status":  "success",
-		"message": "Jadwal deleted successfully",
+		"message": "Room deleted successfully",
 	})
 }
