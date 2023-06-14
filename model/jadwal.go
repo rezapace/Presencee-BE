@@ -13,4 +13,7 @@ type Jadwal struct {
 	Name         string `json:"name" form:"Name"`
 	UserID       uint   `json:"user_id" form:"user_id" validate:"required"`
 	Absen        Absen  `json:"-" form:"absen"`
+	Sks          uint   `json:"sks" form:"sks" validate:"required"`
+	Dosen        uint   `json:"Dosen" form:"Dosen" validate:"required"`
+	Date         string `json:"date" form:"date"`
 }

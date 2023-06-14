@@ -9,6 +9,8 @@ type CreateJadwalRequest struct {
 	Jam          string `json:"jam" validate:"required"`
 	Name         string `json:"name" validate:"required"`
 	UserID       uint   `json:"user_id" form:"user_id" validate:"required"`
+	Sks          uint   `json:"sks" form:"sks" validate:"required"`
+	Date         string `json:"date" form:"date"`
 }
 
 type CreateJadwalResponse struct {
@@ -22,6 +24,8 @@ type UpdateJadwalRequest struct {
 	Jam          string `json:"jam" validate:"required"`
 	Name         string `json:"name" validate:"required"`
 	UserID       uint   `json:"user_id" form:"user_id" validate:"required"`
+	Sks          uint   `json:"sks" form:"sks" validate:"required"`
+	Date         string `json:"date" form:"date"`
 }
 
 type UpdateJadwalResponse struct {
@@ -37,8 +41,13 @@ type GetJadwalResponse struct {
 	NamaDosen  string           `json:"nama_dosen"`
 	Matakuliah model.Matakuliah `json:"matakuliah"`
 	Room       model.Room       `json:"room"`
+	Sks        uint             `json:"sks"`
 }
 
 type GetJadwalsResponse struct {
+	Jadwals []GetJadwalResponse `json:"jadwals"`
+}
+
+type GetListJadwalsByDateResponse struct {
 	Jadwals []GetJadwalResponse `json:"jadwals"`
 }

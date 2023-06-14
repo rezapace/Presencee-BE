@@ -110,6 +110,7 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	jadwal.POST("/", controller.CreateJadwalController)
 	jadwal.PUT("/:id/", controller.UpdateJadwalController)
 	jadwal.DELETE("/:id/", controller.DeleteJadwalController)
+	jadwal.GET("/filter/", controller.GetListJadwalsByDateController)
 
 	//Upload File
 	upload := v1.Group("/upload")

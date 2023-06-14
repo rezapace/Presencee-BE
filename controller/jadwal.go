@@ -6,6 +6,7 @@ import (
 	"presensee_project/model/payload"
 	usecase "presensee_project/usecase/impl"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -57,6 +58,8 @@ func CreateJadwalController(c echo.Context) error {
 		Jam:          requestPayload.Jam,
 		Name:         requestPayload.Name,
 		UserID:       requestPayload.UserID,
+		Sks:          requestPayload.Sks,
+		Date:         requestPayload.Date,
 	}
 
 	err := usecase.CreateJadwal(jadwal)
@@ -103,6 +106,8 @@ func UpdateJadwalController(c echo.Context) error {
 	jadwalToUpdate.Jam = updatedJadwal.Jam
 	jadwalToUpdate.Name = updatedJadwal.Name
 	jadwalToUpdate.UserID = updatedJadwal.UserID
+	jadwalToUpdate.Sks = updatedJadwal.Sks
+	jadwalToUpdate.Date = updatedJadwal.Date
 
 	err = usecase.UpdateJadwal(&jadwalToUpdate) // Pass the pointer to jadwalToUpdate
 	if err != nil {
@@ -134,5 +139,31 @@ func DeleteJadwalController(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"status":  "success",
 		"message": "Jadwal deleted successfully",
+	})
+}
+
+// GetListJadwalsByDateController returns jadwal data based on the specified date
+func GetListJadwalsByDateController(c echo.Context) error {
+	// Get the date parameter from the request query string
+	dateStr := c.QueryParam("date")
+
+	// Parse the date string into a time.Time object
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid date format. Please use 'YYYY-MM-DD' format.")
+	}
+
+	// Convert the date to string format
+	dateString := date.Format("2006-01-02")
+
+	// Get the jadwals for the specified date
+	jadwals, err := usecase.GetListJadwalsByDate(dateString)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status":  "success",
+		"jadwals": jadwals,
 	})
 }

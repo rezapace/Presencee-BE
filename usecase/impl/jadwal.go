@@ -44,3 +44,11 @@ func DeleteJadwal(id uint) error {
 	}
 	return nil
 }
+
+func GetListJadwalsByDate(date string) ([]model.Jadwal, error) {
+	jadwals, err := database.GetListJadwalsByDate(date)
+	if err != nil {
+		return nil, err
+	}
+	return jadwals, nil
+}

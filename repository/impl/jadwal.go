@@ -41,3 +41,11 @@ func DeleteJadwal(id uint) error {
 	}
 	return nil
 }
+
+func GetListJadwalsByDate(date string) ([]model.Jadwal, error) {
+	var jadwals []model.Jadwal
+	if err := config.DB.Where("date = ?", date).Find(&jadwals).Error; err != nil {
+		return nil, err
+	}
+	return jadwals, nil
+}
