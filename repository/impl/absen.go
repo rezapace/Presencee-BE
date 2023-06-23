@@ -59,7 +59,25 @@ func (u *AbsenRepositoryImpl) GetSingleAbsen(ctx context.Context, absenID uint) 
 	return &absen, nil
 }
 
-func (u *AbsenRepositoryImpl) GetPageAbsens(ctx context.Context, limit int, offset int, filter *payload.AbsenFilter) (*model.Absens, error) {
+func (u *AbsenRepositoryImpl) GetPageAbsens(ctx context.Context, limit int, offset int) (*model.Absens, error) {
+	var absens model.Absens
+	err := u.db.WithContext(ctx).
+		Order("created_at DESC").
+		Offset(offset).
+		Limit(limit).
+		Find(&absens).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if len(absens) == 0 {
+		return nil, utils.ErrAbsenNotFound
+	}
+
+	return &absens, nil
+}
+
+func (u *AbsenRepositoryImpl) GetFilterAbsens(ctx context.Context, limit int, offset int, filter *payload.AbsenFilter) (*model.Absens, error) {
 	var absens model.Absens
 	db := u.db.WithContext(ctx)
 
@@ -90,6 +108,10 @@ func (u *AbsenRepositoryImpl) GetPageAbsens(ctx context.Context, limit int, offs
 
 	if filter.Status != "" {
 		db = db.Where("status = ?", filter.Status)
+	}
+
+	if filter.Matakuliah != "" {
+		db = db.Where("matakuliah = ?", filter.Matakuliah)
 	}
 
 	err := db.Order("created_at DESC").
@@ -144,7 +166,36 @@ func (d *AbsenRepositoryImpl) DeleteAbsen(ctx context.Context, absenID uint) err
 	return nil
 }
 
-func (u *AbsenRepositoryImpl) CountAbsen(ctx context.Context, filter *payload.AbsenFilter) (int64, error) {
+func (u *AbsenRepositoryImpl) CountAbsen(ctx context.Context) (int64, error) {
+	db, err := u.db.DB()
+	if err != nil {
+		return 0, err
+	}
+
+	query := sq.Select("COUNT(*)").
+		From("absens a").
+		Where("a.deleted_at IS NULL")
+
+	rows, err := query.RunWith(db).QueryContext(ctx)
+	if err != nil {
+		return 0, err
+	}
+	defer func() {
+		err = rows.Close()
+	}()
+
+	var count int64
+	if rows.Next() {
+		err = rows.Scan(&count)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return count, nil
+}
+
+func (u *AbsenRepositoryImpl) CountAbsenFilter(ctx context.Context, filter *payload.AbsenFilter) (int64, error) {
 	db, err := u.db.DB()
 	if err != nil {
 		return 0, err
@@ -183,6 +234,10 @@ func (u *AbsenRepositoryImpl) CountAbsen(ctx context.Context, filter *payload.Ab
 		query = query.Where("status = ?", filter.Status)
 	}
 
+	if filter.Matakuliah != "" {
+		query = query.Where("matakuliah = ?", filter.Matakuliah)
+	}
+
 	rows, err := query.RunWith(db).QueryContext(ctx)
 	if err != nil {
 		return 0, err
@@ -200,4 +255,84 @@ func (u *AbsenRepositoryImpl) CountAbsen(ctx context.Context, filter *payload.Ab
 	}
 
 	return count, nil
+}
+
+func (u *AbsenRepositoryImpl) CountRiwayatMatakuliah(ctx context.Context, filter *payload.AbsenFilter) (int64, error) {
+	db, err := u.db.DB()
+	if err != nil {
+		return 0, err
+	}
+
+	print("count")
+
+	query := sq.Select("COUNT(*)").
+		From("absens a").
+		Where("a.deleted_at IS NULL")
+
+	// Mengatur filter berdasarkan parameter yang ada
+	if filter.ID != 0 {
+		query = query.Where("id = ?", filter.ID)
+	}
+
+	if !filter.CreatedAfter.IsZero() {
+		query = query.Where("created_at > ?", filter.CreatedAfter)
+	}
+
+	if !filter.CreatedBefore.IsZero() {
+		query = query.Where("created_at < ?", filter.CreatedBefore)
+	}
+
+	if filter.UserID != 0 {
+		query = query.Where("user_id = ?", filter.UserID)
+	}
+
+	if filter.MahasiswaID != 0 {
+		query = query.Where("mahasiswa_id = ?", filter.MahasiswaID)
+	}
+
+	if filter.JadwalID != 0 {
+		query = query.Where("jadwal_id = ?", filter.JadwalID)
+	}
+
+	if filter.Status != "" {
+		query = query.Where("status = ?", filter.Status)
+	}
+
+	if filter.Matakuliah != "" {
+		query = query.Where("matakuliah = ?", filter.Matakuliah)
+	}
+
+	rows, err := query.RunWith(db).QueryContext(ctx)
+	if err != nil {
+		return 0, err
+	}
+	defer func() {
+		err = rows.Close()
+	}()
+
+	var count int64
+	if rows.Next() {
+		err = rows.Scan(&count)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return count, nil
+}
+
+func (u *AbsenRepositoryImpl) GetMatakuliah(ctx context.Context) (*model.Matakuliahs, error) {
+	var matakuliahs model.Matakuliahs
+	err := u.db.WithContext(ctx).
+		Order("created_at DESC").
+		Find(&matakuliahs).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if len(matakuliahs) == 0 {
+		return nil, utils.ErrAbsenNotFound
+	}
+
+	return &matakuliahs, nil
 }

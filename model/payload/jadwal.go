@@ -1,21 +1,25 @@
 package payload
 
-import "presensee_project/model"
+import (
+	"presensee_project/model"
+	"time"
+)
 
-type CreateJadwalRequest struct {
-	Hari         string `json:"hari" validate:"required"`
-	MatakuliahID uint   `json:"matakuliah_id" validate:"required"`
-	RoomID       uint   `json:"room_id" validate:"required"`
-	Jam          string `json:"jam" validate:"required"`
-	Name         string `json:"name" validate:"required"`
-	UserID       uint   `json:"user_id" form:"user_id" validate:"required"`
+type CreateJadwalRequests struct {
+	Hari         string    `json:"hari" validate:"required"`
+	MatakuliahID uint      `json:"matakuliah_id" validate:"required"`
+	RoomID       uint      `json:"room_id" validate:"required"`
+	Jam          time.Time `json:"jam" validate:"required"`
+	Name         string    `json:"name" validate:"required"`
+	UserID       uint      `json:"user_id" form:"user_id" validate:"required"`
+	DosenID      uint      `json:"dosen_id" form:"dosen_id" validate:"required"`
 }
 
 type CreateJadwalResponse struct {
 	JadwalID uint `json:"jadwal_id"`
 }
 
-type UpdateJadwalRequest struct {
+type UpdateJadwalRequests struct {
 	Hari         string `json:"hari" validate:"required"`
 	MatakuliahID uint   `json:"matakuliah_id" validate:"required"`
 	RoomID       uint   `json:"room_id" validate:"required"`

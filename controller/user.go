@@ -72,9 +72,91 @@ func (u *UserController) LoginUser(c echo.Context) error {
 		}
 	}
 
+	userID, err := u.userService.FindByEmail(c.Request().Context(), user.Email)
+
+	userDetail, err := u.userService.GetSingleUser(c.Request().Context(), userID.ID)
+
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "success login",
 		"token":   token,
+		"data":    userDetail,
+	})
+}
+
+func (u *UserController) LoginDosen(c echo.Context) error {
+	user := new(payload.UserLoginRequest)
+	if err := c.Bind(user); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
+	}
+
+	if err := c.Validate(user); err != nil {
+		return err
+	}
+
+	userID, err := u.userService.FindByEmail(c.Request().Context(), user.Email)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrUserNotFound.Error())
+	}
+
+	if userID.Role != "Dosen" && userID.Role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
+
+	token, err := u.userService.LogInUser(c.Request().Context(), user)
+	if err != nil {
+		switch err {
+		case utils.ErrInvalidCredentials:
+			return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	userDetail, err := u.userService.GetSingleUser(c.Request().Context(), userID.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, utils.ErrUserNotFound.Error())
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "success login",
+		"token":   token,
+		"data":    userDetail,
+	})
+}
+
+func (u *UserController) LoginAdmin(c echo.Context) error {
+	user := new(payload.UserLoginRequest)
+	if err := c.Bind(user); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrBadRequestBody.Error())
+	}
+
+	if err := c.Validate(user); err != nil {
+		return err
+	}
+
+	userID, err := u.userService.FindByEmail(c.Request().Context(), user.Email)
+
+	if userID.Role != "admin" {
+		return echo.NewHTTPError(http.StatusForbidden, utils.ErrDidntHavePermission.Error())
+	}
+
+	token, err := u.userService.LogInUser(c.Request().Context(), user)
+	if err != nil {
+		switch err {
+		case utils.ErrInvalidCredentials:
+			return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	userDetail, err := u.userService.GetSingleUser(c.Request().Context(), userID.ID)
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "success login",
+		"token":   token,
+		"data":    userDetail,
 	})
 }
 
@@ -134,7 +216,7 @@ func (u *UserController) GetBriefUsers(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.ErrInvalidNumber.Error())
 	}
 
-	users, err := u.userService.GetBriefUsers(c.Request().Context(), int(pageInt), int(limitInt))
+	users, count, err := u.userService.GetBriefUsers(c.Request().Context(), int(pageInt), int(limitInt))
 	if err != nil {
 		if err == utils.ErrUserNotFound {
 			return echo.NewHTTPError(http.StatusNotFound, err.Error())
@@ -143,8 +225,9 @@ func (u *UserController) GetBriefUsers(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, echo.Map{
-		"message": "success get users",
-		"data":    users,
+		"message":     "success get users",
+		"data":        users,
+		"total_admin": count,
 		"meta": echo.Map{
 			"page":  pageInt,
 			"limit": limitInt,

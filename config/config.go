@@ -2,8 +2,10 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"presensee_project/model"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,7 +22,6 @@ func LoadConfig() map[string]string {
 	env["DB_PASS"] = os.Getenv("DB_PASS")
 	env["DB_NAME"] = os.Getenv("DB_NAME")
 	env["JWT_SECRET"] = os.Getenv("JWT_SECRET")
-
 	return env
 }
 
@@ -39,11 +40,18 @@ func InitDB() *gorm.DB {
 	if e != nil {
 		panic(e)
 	}
+
+	local, err := time.LoadLocation("Asia/Makassar")
+	if err != nil {
+		log.Fatal("failed to load timezone: ", err)
+	}
+	time.Local = local
+
 	InitMigrate()
 	return DB
 }
 
 func InitMigrate() {
 
-	DB.AutoMigrate(&model.User{}, &model.Mahasiswa{}, &model.Dosen{}, &model.Jadwal{}, &model.Absen{}, &model.Jurusan{}, &model.Matakuliah{}, &model.Room{})
+	DB.AutoMigrate(&model.User{}, &model.Mahasiswa{}, &model.Dosen{}, &model.Jadwal{}, &model.Matakuliah{}, &model.Room{}, &model.Absen{}, &model.Jurusan{})
 }

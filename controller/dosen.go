@@ -16,9 +16,12 @@ func GetDosensController(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	totalCount := len(dosens)
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"dosens": dosens,
+		"status":      "success",
+		"dosens":      dosens,
+		"total_count": totalCount,
 	})
 }
 
@@ -29,22 +32,6 @@ func GetDosenController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
 	dosen, err := usecase.GetDosen(uint(id))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"dosen":  dosen,
-	})
-}
-
-// GetDosenController returns dosen data based on ID
-func GetDosenByUserIDController(c echo.Context) error {
-	userID, err := strconv.ParseUint(c.Param("user_id"), 10, 32)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
-	}
-	dosen, err := usecase.GetDosenByUserID(uint(userID))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

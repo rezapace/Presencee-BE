@@ -1,46 +1,16 @@
 package usecase
 
 import (
-	"presensee_project/model"
-	"presensee_project/repository/database"
+	"context"
+
+	"presensee_project/model/payload"
 )
 
-func CreateJadwal(jadwal *model.Jadwal) error {
-	err := database.CreateJadwal(jadwal)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func GetJadwal(id uint) (model.Jadwal, error) {
-	jadwal, err := database.GetJadwalByID(id)
-	if err != nil {
-		return model.Jadwal{}, err
-	}
-	return jadwal, nil
-}
-
-func GetListJadwals() ([]model.Jadwal, error) {
-	jadwals, err := database.GetJadwals()
-	if err != nil {
-		return nil, err
-	}
-	return jadwals, nil
-}
-
-func UpdateJadwal(jadwal *model.Jadwal) error {
-	err := database.UpdateJadwal(jadwal)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func DeleteJadwal(id uint) error {
-	err := database.DeleteJadwal(id)
-	if err != nil {
-		return err
-	}
-	return nil
+type JadwalService interface {
+	CreateJadwal(ctx context.Context, jadwal *payload.CreateJadwalRequest) error
+	GetSingleJadwal(ctx context.Context, jadwalID uint) (*payload.GetSingleJadwalResponse, error)
+	GetPageJadwals(ctx context.Context, page int, limit int) (*payload.GetPageJadwalsResponse, int64, error)
+	GetFilterJadwals(ctx context.Context, page int, limit int, filter *payload.JadwalFilter) (*payload.GetPageJadwalsResponse, int64, error)
+	UpdateJadwal(ctx context.Context, jadwalID uint, request *payload.UpdateJadwalRequest) error
+	DeleteJadwal(ctx context.Context, jadwalID uint) error
 }

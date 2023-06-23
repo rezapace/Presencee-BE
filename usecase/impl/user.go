@@ -110,15 +110,15 @@ func (d *UserServiceImpl) GetSingleUser(ctx context.Context, userID uint) (*payl
 	return userResponse, nil
 }
 
-func (u *UserServiceImpl) GetBriefUsers(ctx context.Context, page int, limit int) (*payload.BriefUsersResponse, error) {
+func (u *UserServiceImpl) GetBriefUsers(ctx context.Context, page int, limit int) (*payload.BriefUsersResponse, int64, error) {
 	offset := (page - 1) * limit
 
-	users, err := u.userRepository.GetBriefUsers(ctx, limit, offset)
+	users, count, err := u.userRepository.GetBriefUsers(ctx, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return payload.NewBriefUsersResponse(users), nil
+	return payload.NewBriefUsersResponse(users), count, nil
 }
 
 func (u *UserServiceImpl) UpdateUser(ctx context.Context, userID uint, request *payload.UserUpdateRequest) error {

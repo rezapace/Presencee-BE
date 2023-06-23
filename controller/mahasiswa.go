@@ -16,9 +16,12 @@ func GetMahasiswasController(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	totalCount := len(mahasiswas)
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status":     "success",
-		"mahasiswas": mahasiswas,
+		"status":      "success",
+		"mahasiswas":  mahasiswas,
+		"total_count": totalCount,
 	})
 }
 
@@ -29,22 +32,6 @@ func GetMahasiswaController(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
 	mahasiswa, err := usecase.GetMahasiswa(uint(id))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status":    "success",
-		"mahasiswa": mahasiswa,
-	})
-}
-
-// GetMahasiswaController returns mahasiswa data based on ID
-func GetMahasiswaByUserIDController(c echo.Context) error {
-	userID, err := strconv.ParseUint(c.Param("user_id"), 10, 32)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
-	}
-	mahasiswa, err := usecase.GetMahasiswaByUserID(uint(userID))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -79,6 +66,7 @@ func CreateMahasiswaController(c echo.Context) error {
 		Image:      requestPayload.Image,
 		Phone:      requestPayload.Phone,
 		Jurusan:    requestPayload.Jurusan,
+		Fakultas:   requestPayload.Fakultas,
 		TahunMasuk: requestPayload.TahunMasuk,
 		IPK:        requestPayload.IPK,
 		UserID:     requestPayload.UserID,
@@ -128,6 +116,7 @@ func UpdateMahasiswaController(c echo.Context) error {
 	mahasiswaToUpdate.Image = updatedMahasiswa.Image
 	mahasiswaToUpdate.Phone = updatedMahasiswa.Phone
 	mahasiswaToUpdate.Jurusan = updatedMahasiswa.Jurusan
+	mahasiswaToUpdate.Fakultas = updatedMahasiswa.Fakultas
 	mahasiswaToUpdate.TahunMasuk = updatedMahasiswa.TahunMasuk
 	mahasiswaToUpdate.IPK = updatedMahasiswa.IPK
 	mahasiswaToUpdate.UserID = updatedMahasiswa.UserID

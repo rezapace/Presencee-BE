@@ -12,14 +12,16 @@ import (
 )
 
 type Routes struct {
-	userController  *ControllerPkg.UserController
-	absenController *ControllerPkg.AbsenController
+	userController   *ControllerPkg.UserController
+	absenController  *ControllerPkg.AbsenController
+	jadwalController *ControllerPkg.JadwalController
 }
 
-func NewRoutes(userController *ControllerPkg.UserController, absenController *ControllerPkg.AbsenController) *Routes {
+func NewRoutes(userController *ControllerPkg.UserController, absenController *ControllerPkg.AbsenController, jadwalController *ControllerPkg.JadwalController) *Routes {
 	return &Routes{
-		userController:  userController,
-		absenController: absenController,
+		userController:   userController,
+		absenController:  absenController,
+		jadwalController: jadwalController,
 	}
 }
 
@@ -45,6 +47,8 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	users := v1.Group("/users")
 	users.POST("/signup/", r.userController.SignUpUser)
 	users.POST("/login/", r.userController.LoginUser)
+	users.POST("/admin/", r.userController.LoginAdmin)
+	users.POST("/dosen/", r.userController.LoginDosen)
 
 	usersWithAuth := users.Group("", jwtMiddleware)
 	usersWithAuth.GET("/", r.userController.GetBriefUsers)
@@ -54,29 +58,33 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 
 	// mahasiswa collection
 	mahasiswa := v1.Group("/mahasiswa", jwtMiddleware)
-	mahasiswa.GET("/", controller.GetMahasiswasController)
 	mahasiswa.GET("/:id/", controller.GetMahasiswaController)
-	mahasiswa.GET("/:user_id/", controller.GetMahasiswaController)
 	mahasiswa.POST("/", controller.CreateMahasiswaController)
 	mahasiswa.PUT("/:id/", controller.UpdateMahasiswaController)
 	mahasiswa.DELETE("/:id/", controller.DeleteMahasiswaController)
 
+	mahasiswaNoJwt := v1.Group("/mahasiswa")
+	mahasiswaNoJwt.GET("/", controller.GetMahasiswasController)
+
 	// dosen
 	dosen := v1.Group("/dosen", jwtMiddleware)
-	dosen.GET("/", controller.GetDosensController)
 	dosen.GET("/:id/", controller.GetDosenController)
-	dosen.GET("/:user_id/", controller.GetDosenController)
 	dosen.POST("/", controller.CreateDosenController)
 	dosen.PUT("/:id/", controller.UpdateDosenController)
 	dosen.DELETE("/:id/", controller.DeleteDosenController)
 
+	dosenNoJwt := v1.Group("/dosen")
+	dosenNoJwt.GET("/", controller.GetDosensController)
+
 	// room
 	room := v1.Group("/room", jwtMiddleware)
-	room.GET("/", controller.GetRoomsController)
 	room.GET("/:id/", controller.GetRoomController)
 	room.POST("/", controller.CreateRoomController)
 	room.PUT("/:id/", controller.UpdateRoomController)
 	room.DELETE("/:id/", controller.DeleteRoomController)
+
+	roomNoJwt := v1.Group("/room")
+	roomNoJwt.GET("/", controller.GetRoomsController)
 
 	// matakuliah
 	matakuliah := v1.Group("/matakuliah", jwtMiddleware)
@@ -93,6 +101,9 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	absens.PUT("/", r.absenController.UpdateAbsen, jwtMiddleware)
 	absens.GET("/:absen_id/", r.absenController.GetSingleAbsen, jwtMiddleware)
 	absens.GET("/", r.absenController.GetPageAbsen)
+	absens.GET("/riwayat/", r.absenController.GetRiwayat)
+	absens.GET("/dashboard/", r.absenController.GetRiwayatDashboard)
+	absens.GET("/filter/", r.absenController.GetFilterAbsen)
 	absens.DELETE("/:absen_id/", r.absenController.DeleteAbsen, jwtMiddleware)
 
 	// Jurusan
@@ -103,11 +114,16 @@ func (r *Routes) Init(e *echo.Echo, conf map[string]string) {
 	jurusan.PUT("/:id/", controller.UpdateJurusanController)
 	jurusan.DELETE("/:id/", controller.DeleteJurusanController)
 
-	// jadwal
-	jadwal := v1.Group("/jadwal", jwtMiddleware)
-	jadwal.GET("/", controller.GetJadwalsController)
-	jadwal.GET("/:id/", controller.GetJadwalController)
-	jadwal.POST("/", controller.CreateJadwalController)
-	jadwal.PUT("/:id/", controller.UpdateJadwalController)
-	jadwal.DELETE("/:id/", controller.DeleteJadwalController)
+	// Jadwal
+	jadwals := v1.Group("/jadwals", jwtMiddleware)
+	jadwals.POST("/", r.jadwalController.CreateJadwal)
+	jadwals.PUT("/", r.jadwalController.UpdateJadwal, jwtMiddleware)
+	jadwals.GET("/:jadwal_id/", r.jadwalController.GetSingleJadwal, jwtMiddleware)
+	jadwals.GET("/", r.jadwalController.GetPageJadwal)
+	jadwals.GET("/filter/", r.jadwalController.GetFilterJadwal)
+	jadwals.DELETE("/:jadwal_id/", r.jadwalController.DeleteJadwal, jwtMiddleware)
+
+	//Upload File
+	upload := v1.Group("/upload")
+	upload.POST("/", controller.UploadFile)
 }
