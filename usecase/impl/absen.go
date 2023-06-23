@@ -103,7 +103,7 @@ func (u *AbsenServiceImpl) GetFilterAbsens(ctx context.Context, page int, limit 
 }
 
 func (u *AbsenServiceImpl) CountRiwayatMatakuliah(ctx context.Context, filter *payload.AbsenFilter) (int64, error) {
-	count, err := u.absenRepository.CountRiwayatMatakuliah(ctx, filter)
+	count, err := u.absenRepository.CountAbsenFilter(ctx, filter)
 	if err != nil {
 		log.Println("error while counting absens: ", err)
 		return 0, err
@@ -122,4 +122,14 @@ func (u *AbsenServiceImpl) UpdateAbsen(ctx context.Context, absenID uint, update
 func (d *AbsenServiceImpl) DeleteAbsen(ctx context.Context, absenID uint) error {
 
 	return d.absenRepository.DeleteAbsen(ctx, absenID)
+}
+
+func (u *AbsenServiceImpl) GetMatakuliah(ctx context.Context) (*payload.GetPageMatakuliahssResponse, error) {
+
+	matakuliahs, err := u.absenRepository.GetMatakuliah(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return payload.NewGetPageMatakuliahsResponse(matakuliahs), nil
 }

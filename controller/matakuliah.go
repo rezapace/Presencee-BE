@@ -41,7 +41,7 @@ func GetMatakuliahByNameAndDateController(c echo.Context) error {
 	response := payload.GetMatakuliahResponse{
 		MatakuliahID: matakuliah.ID,
 		Name:         matakuliah.Name,
-		Date:         matakuliah.Date,
+		Dosen:        matakuliah.Dosen,
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -85,8 +85,8 @@ func CreateMatakuliahController(c echo.Context) error {
 	// }
 
 	matakuliah := &model.Matakuliah{
-		Name: requestPayload.Name,
-		Date: requestPayload.Date,
+		Name:  requestPayload.Name,
+		Dosen: requestPayload.Dosen,
 	}
 
 	err := usecase.CreateMatakuliah(matakuliah)
@@ -128,7 +128,7 @@ func UpdateMatakuliahController(c echo.Context) error {
 
 	// Update matakuliah data
 	matakuliahToUpdate.Name = updatedMatakuliah.Name
-	matakuliahToUpdate.Date = updatedMatakuliah.Date
+	matakuliahToUpdate.Dosen = updatedMatakuliah.Dosen
 
 	err = usecase.UpdateMatakuliah(&matakuliahToUpdate) // Pass the pointer to matakuliahToUpdate
 	if err != nil {

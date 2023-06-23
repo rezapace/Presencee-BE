@@ -13,10 +13,9 @@ type CreateAbsenRequest struct {
 	Matakuliah   string    `json:"matakuliah" validate:"required"`
 	TimeAttemp   time.Time `json:"time_attemp" validate:"required"`
 	Status       string    `json:"status" validate:"required"`
-	Description  string    `json:"description" validate:"required"`
-	Location     string    `json:"location" validate:"required"`
-	Image        string    `json:"image" validate:"required"`
-	IsKonfirmasi bool      `json:"is_konfirmasi" validate:"required"`
+	Location     string    `json:"location"`
+	Image        string    `json:"image"`
+	IsKonfirmasi bool      `json:"is_konfirmasi"`
 }
 
 func (u *CreateAbsenRequest) ToEntity() *model.Absen {
@@ -27,7 +26,6 @@ func (u *CreateAbsenRequest) ToEntity() *model.Absen {
 		Matakuliah:   u.Matakuliah,
 		TimeAttemp:   u.TimeAttemp,
 		Status:       u.Status,
-		Description:  u.Description,
 		Location:     u.Location,
 		Image:        u.Image,
 		IsKonfirmasi: u.IsKonfirmasi,
@@ -42,7 +40,6 @@ type UpdateAbsenRequest struct {
 	Matakuliah   string    `json:"matakuliah"`
 	TimeAttemp   time.Time `json:"time_attemp"`
 	Status       string    `json:"status"`
-	Description  string    `json:"description"`
 	Location     string    `json:"location"`
 	Image        string    `json:"image"`
 	IsKonfirmasi bool      `json:"is_konfirmasi"`
@@ -56,7 +53,6 @@ func (u *UpdateAbsenRequest) ToEntity() *model.Absen {
 		Matakuliah:   u.Matakuliah,
 		TimeAttemp:   u.TimeAttemp,
 		Status:       u.Status,
-		Description:  u.Description,
 		Location:     u.Location,
 		Image:        u.Image,
 		IsKonfirmasi: u.IsKonfirmasi,
@@ -71,7 +67,6 @@ type GetSingleAbsenResponse struct {
 	Matakuliah   string          `json:"matakuliah"`
 	TimeAttemp   time.Time       `json:"time_attemp"`
 	Status       string          `json:"status"`
-	Description  string          `json:"description"`
 	Location     string          `json:"location"`
 	Image        string          `json:"image"`
 	IsKonfirmasi bool            `json:"is_konfirmasi"`
@@ -88,7 +83,6 @@ func NewGetSingleAbsenResponse(absen *model.Absen) *GetSingleAbsenResponse {
 		Matakuliah:   absen.Matakuliah,
 		TimeAttemp:   absen.TimeAttemp,
 		Status:       absen.Status,
-		Description:  absen.Description,
 		Location:     absen.Location,
 		Image:        absen.Image,
 		IsKonfirmasi: absen.IsKonfirmasi,
@@ -103,7 +97,6 @@ type GetPageAbsenResponse struct {
 	Matakuliah   string    `json:"matakuliah"`
 	TimeAttemp   time.Time `json:"time_attemp"`
 	Status       string    `json:"status"`
-	Description  string    `json:"description"`
 	Location     string    `json:"location"`
 	Image        string    `json:"image"`
 	IsKonfirmasi bool      `json:"is_konfirmasi"`
@@ -118,7 +111,6 @@ func NewGetPageAbsenResponse(absen *model.Absen) *GetPageAbsenResponse {
 		Matakuliah:   absen.Matakuliah,
 		TimeAttemp:   absen.TimeAttemp,
 		Status:       absen.Status,
-		Description:  absen.Description,
 		Location:     absen.Location,
 		Image:        absen.Image,
 		IsKonfirmasi: absen.IsKonfirmasi,
@@ -133,4 +125,28 @@ func NewGetPageAbsensResponse(absens *model.Absens) *GetPageAbsensResponse {
 		briefAbsensResponse = append(briefAbsensResponse, *NewGetPageAbsenResponse(&absen))
 	}
 	return &briefAbsensResponse
+}
+
+type GetPageMatakuliahResponse struct {
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Dosen string `json:"dosen"`
+}
+
+func NewGetPageMatakuliahResponse(matakuliah *model.Matakuliah) *GetPageMatakuliahResponse {
+	return &GetPageMatakuliahResponse{
+		ID:    matakuliah.ID,
+		Name:  matakuliah.Name,
+		Dosen: matakuliah.Dosen,
+	}
+}
+
+type GetPageMatakuliahssResponse []GetPageMatakuliahResponse
+
+func NewGetPageMatakuliahsResponse(matakuliahs *model.Matakuliahs) *GetPageMatakuliahssResponse {
+	var briefMatakuliahsResponse GetPageMatakuliahssResponse
+	for _, absen := range *matakuliahs {
+		briefMatakuliahsResponse = append(briefMatakuliahsResponse, *NewGetPageMatakuliahResponse(&absen))
+	}
+	return &briefMatakuliahsResponse
 }

@@ -17,4 +17,5 @@ type AbsenRepository interface {
 	CountAbsenFilter(ctx context.Context, filter *payload.AbsenFilter) (int64, error)
 	CountRiwayatMatakuliah(ctx context.Context, filter *payload.AbsenFilter) (int64, error)
 	CountAbsen(ctx context.Context) (int64, error)
+	GetMatakuliah(ctx context.Context) (*model.Matakuliahs, error)
 }

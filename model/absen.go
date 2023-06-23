@@ -14,7 +14,6 @@ type Absen struct {
 	Matakuliah   string    `json:"matakuliah"`
 	TimeAttemp   time.Time `json:"time_attemp" form:"time_attemp"`
 	Status       string    `json:"status" form:"status"`
-	Description  string    `json:"description" form:"description"`
 	Location     string    `json:"location" form:"location"`
 	Image        string    `json:"image" form:"image"`
 	IsKonfirmasi bool      `json:"is_konfirmasi" form:"is_konfirmasi"`

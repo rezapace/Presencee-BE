@@ -18,7 +18,7 @@ func UploadFile(c echo.Context) error {
 	var err error
 
 	ctx := appengine.NewContext(c.Request())
-	opt := option.WithCredentialsFile(("serviceAccountKey.json"))
+	opt := option.WithCredentialsFile(("/app/serviceAccountKey.json"))
 
 	storageClient, err = storage.NewClient(ctx, opt)
 	if err != nil {
@@ -64,7 +64,7 @@ func UploadFile(c echo.Context) error {
 		})
 	}
 
-	url := "https://storage.cloud.google.com/" + bucket + "/" + wc.Attrs().Name
+	url := "https://storage.googleapis.com/" + bucket + "/" + wc.Attrs().Name
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "File uploaded successfully",

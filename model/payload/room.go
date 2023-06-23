@@ -3,7 +3,7 @@ package payload
 type CreateRoomRequest struct {
 	Name     string `json:"name" form:"name" validate:"required"`
 	Location string `json:"location" form:"location" validate:"required"`
-	Seat     string `json:"seat" form:"seat" validate:"required"`
+	Code     string `json:"code" form:"code" validate:"required"`
 }
 
 type CreateRoomResponse struct {
@@ -11,9 +11,9 @@ type CreateRoomResponse struct {
 }
 
 type UpdateRoomRequest struct {
-	Name     string `json:"name" form:"name" validate:"required"`
-	Location string `json:"location" form:"location" validate:"required"`
-	Seat     string `json:"seat" form:"seat" validate:"required"`
+	Name     string `json:"name" form:"name"`
+	Location string `json:"location" form:"location"`
+	Code     string `json:"code" form:"code"`
 }
 
 type UpdateRoomResponse struct {
@@ -23,7 +23,7 @@ type UpdateRoomResponse struct {
 type GetRoomResponse struct {
 	Name     string `json:"name"`
 	Location string `json:"location"`
-	Seat     string `json:"seat"`
+	Seat     string `json:"code"`
 }
 
 type GetRoomsResponse struct {

@@ -320,3 +320,19 @@ func (u *AbsenRepositoryImpl) CountRiwayatMatakuliah(ctx context.Context, filter
 
 	return count, nil
 }
+
+func (u *AbsenRepositoryImpl) GetMatakuliah(ctx context.Context) (*model.Matakuliahs, error) {
+	var matakuliahs model.Matakuliahs
+	err := u.db.WithContext(ctx).
+		Order("created_at DESC").
+		Find(&matakuliahs).Error
+	if err != nil {
+		return nil, err
+	}
+
+	if len(matakuliahs) == 0 {
+		return nil, utils.ErrAbsenNotFound
+	}
+
+	return &matakuliahs, nil
+}

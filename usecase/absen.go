@@ -14,4 +14,5 @@ type AbsenService interface {
 	CountRiwayatMatakuliah(ctx context.Context, filter *payload.AbsenFilter) (int64, error)
 	UpdateAbsen(ctx context.Context, absenID uint, request *payload.UpdateAbsenRequest) error
 	DeleteAbsen(ctx context.Context, absenID uint) error
+	GetMatakuliah(ctx context.Context) (*payload.GetPageMatakuliahssResponse, error)
 }

@@ -68,8 +68,10 @@ func (u *UserRepositoryImpl) GetSingleUser(ctx context.Context, userID uint) (*m
 	return &user, nil
 }
 
-func (u *UserRepositoryImpl) GetBriefUsers(ctx context.Context, limit int, offset int) (*model.Users, error) {
+func (u *UserRepositoryImpl) GetBriefUsers(ctx context.Context, limit int, offset int) (*model.Users, int64, error) {
 	var users model.Users
+	var count int64
+
 	err := u.db.WithContext(ctx).
 		Select([]string{"id", "email", "name", "role"}).
 		Order("created_at DESC").
@@ -77,14 +79,22 @@ func (u *UserRepositoryImpl) GetBriefUsers(ctx context.Context, limit int, offse
 		Limit(limit).
 		Find(&users).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+
+	err = u.db.WithContext(ctx).
+		Model(&model.User{}).
+		Where("role = ?", "admin").
+		Count(&count).Error
+	if err != nil {
+		return nil, 0, err
 	}
 
 	if len(users) == 0 {
-		return nil, utils.ErrUserNotFound
+		return nil, 0, utils.ErrUserNotFound
 	}
 
-	return &users, nil
+	return &users, count, nil
 }
 
 func (u *UserRepositoryImpl) UpdateUser(ctx context.Context, user *model.User) error {

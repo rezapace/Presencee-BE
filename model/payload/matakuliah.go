@@ -1,10 +1,8 @@
 package payload
 
-import "time"
-
 type CreateMatakuliahRequest struct {
-	Name string    `json:"name" form:"name"`
-	Date time.Time `json:"date" form:"date"`
+	Name  string `json:"name" form:"name"`
+	Dosen string `json:"dosen" form:"dosen"`
 }
 
 type CreateMatakuliahResponse struct {
@@ -12,8 +10,8 @@ type CreateMatakuliahResponse struct {
 }
 
 type UpdateMatakuliahRequest struct {
-	Name string    `json:"name" form:"name"`
-	Date time.Time `json:"date" form:"date"`
+	Name  string `json:"name" form:"name"`
+	Dosen string `json:"dosen" form:"dosen"`
 }
 
 type UpdateMatakuliahResponse struct {
@@ -21,9 +19,9 @@ type UpdateMatakuliahResponse struct {
 }
 
 type GetMatakuliahResponse struct {
-	MatakuliahID uint      `json:"matakuliah_id"`
-	Name         string    `json:"name" form:"name"`
-	Date         time.Time `json:"date" form:"date"`
+	MatakuliahID uint   `json:"matakuliah_id"`
+	Name         string `json:"name" form:"name"`
+	Dosen        string `json:"dosen" form:"dosen"`
 }
 
 type GetMatakuliahsResponse struct {

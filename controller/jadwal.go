@@ -51,10 +51,8 @@ func CreateJadwalController(c echo.Context) error {
 	}
 
 	jadwal := &model.Jadwal{
-		Hari:         requestPayload.Hari,
 		MatakuliahID: requestPayload.MatakuliahID,
 		RoomID:       requestPayload.RoomID,
-		Jam:          requestPayload.Jam,
 		Name:         requestPayload.Name,
 		UserID:       requestPayload.UserID,
 	}
@@ -97,10 +95,8 @@ func UpdateJadwalController(c echo.Context) error {
 	}
 
 	// Update jadwal data
-	jadwalToUpdate.Hari = updatedJadwal.Hari
 	jadwalToUpdate.MatakuliahID = updatedJadwal.MatakuliahID
 	jadwalToUpdate.RoomID = updatedJadwal.RoomID
-	jadwalToUpdate.Jam = updatedJadwal.Jam
 	jadwalToUpdate.Name = updatedJadwal.Name
 	jadwalToUpdate.UserID = updatedJadwal.UserID
 

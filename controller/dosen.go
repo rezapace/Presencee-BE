@@ -16,9 +16,12 @@ func GetDosensController(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	totalCount := len(dosens)
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"dosens": dosens,
+		"status":      "success",
+		"dosens":      dosens,
+		"total_count": totalCount,
 	})
 }
 

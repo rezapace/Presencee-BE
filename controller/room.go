@@ -53,7 +53,7 @@ func CreateRoomController(c echo.Context) error {
 	room := &model.Room{
 		Name:     requestPayload.Name,
 		Location: requestPayload.Location,
-		Seat:     requestPayload.Seat,
+		Code:     requestPayload.Code,
 	}
 
 	err := usecase.CreateRoom(room)
@@ -96,7 +96,7 @@ func UpdateRoomController(c echo.Context) error {
 	// Update dosen data
 	roomToUpdate.Name = updatedRoom.Name
 	roomToUpdate.Location = updatedRoom.Location
-	roomToUpdate.Seat = updatedRoom.Seat
+	roomToUpdate.Code = updatedRoom.Code
 
 	err = usecase.UpdateRoom(&roomToUpdate) // Pass the pointer to dosenToUpdate
 	if err != nil {
