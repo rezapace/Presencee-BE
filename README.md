@@ -1,14 +1,5 @@
-# Presencee-BE
+# Capstone Projek ALtera Academy Golang Backend 
 
+### capstone projek aplikasi Presense Backend
 
-=======
-asdasdasd
-=======
-//test
-//test2
-======
-coba coba
-=======
-coba 1
-
-yg 
+Repository "Presencee-BE" oleh rezapace merupakan aplikasi backend yang utamanya ditulis dalam bahasa pemrograman Go, seperti yang terindikasi dari keberadaan file-file seperti main.go, go.mod, dan go.sum. Repository ini dilengkapi dengan setup Docker (docker-compose.yml, dockerfile) untuk kontainerisasi, dan .github/workflows/aws.yml untuk CI/CD berbasis AWS. Aplikasi ini terstruktur berdasarkan berbagai fungsionalitas seperti penanganan pengguna (controller/user.go, model/user.go), pengelolaan jadwal (controller/jadwal.go, model/jadwal.go), dan entitas pendidikan lainnya seperti kursus, departemen, dan absensi (controller, model). Terdapat juga direktori untuk middleware (middleware), repositories (repository), dan use cases (usecase), menunjukkan adanya arsitektur bersih (clean architecture). Keberadaan direktori utils dan constant menandakan fungsi utilitas dan definisi konstan. Selain itu, repository ini mencakup file SQL (caps.sql) dan tangkapan layar (SS Mahasiswa/), kemungkinan untuk skema basis data dan demonstrasi fitur. File .env menunjukkan manajemen variabel lingkungan, dan README.md kemungkinan berisi dokumentasi proyek.
